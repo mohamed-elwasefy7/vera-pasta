@@ -277,22 +277,24 @@ html[dir="rtl"] #loader-line { transform-origin: 100% 50%; }
   transform: rotate(45deg);
 }
 
-/* ---------- Dish screens ---------- */
+/* ---------- Dish screens ----------
+   Mobile-first: figure sits IN FLOW above the content — text can never
+   overlap the food. Desktop (≥1024) restores the approved side-by-side
+   layout in responsive.css. */
 .dish {
-  justify-content: flex-end;
-  padding-block-end: calc(var(--s5) + env(safe-area-inset-bottom));
-  gap: 0;
+  justify-content: flex-start;
+  padding-block-start: calc(var(--nav-h) + env(safe-area-inset-top) + var(--s2));
+  padding-block-end: calc(var(--s4) + env(safe-area-inset-bottom));
+  padding-inline: var(--s5);
+  gap: var(--s3);
 }
 .dish__figure {
-  position: absolute;
-  inset-block-start: calc(var(--nav-h) * .9);
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-  inline-size: min(80vw, 42dvh);
+  position: static;
+  flex: 0 0 auto;
+  inline-size: min(72vw, 36dvh);
   aspect-ratio: 1;
-  z-index: 0;
+  margin-inline: auto;
 }
-html[dir="rtl"] .dish__figure { transform: translateX(50%); }
 .dish__img {
   inline-size: 100%; block-size: 100%;
   object-fit: cover;
@@ -307,15 +309,19 @@ html[dir="rtl"] .dish__figure { transform: translateX(50%); }
 .dish[data-presentation="card"] .dish__img { border-radius: var(--radius); }
 
 .dish__content {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
+  flex: 1 1 auto;
+  min-block-size: 0;
   inline-size: 100%;
   max-inline-size: 30rem;
+  margin-inline: auto;
   display: grid;
   gap: var(--s2);
+  align-content: end;     /* text anchors to the bottom; breathing room above */
   text-align: start;
 }
 .dish__kicker {
-  font-size: .72rem;
+  font-size: clamp(.66rem, 2.4vw, .72rem);
   font-weight: 600;
   letter-spacing: .3em;
   text-transform: uppercase;
@@ -332,22 +338,29 @@ html[lang="ar"] .dish__name { letter-spacing: 0; }   /* Arabic never tracks nega
 .dish__subtitle {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
-  font-size: 1.1rem;
+  font-size: clamp(.95rem, 3.2vw, 1.1rem);
   color: var(--ink-soft);
   letter-spacing: .05em;
 }
 .dish__desc {
-  font-size: .95rem;
+  font-size: clamp(.88rem, 3vw, .95rem);
   color: var(--ink-soft);
   line-height: 1.75;
   max-inline-size: 28rem;
+  /* mobile guard: long copy compresses instead of climbing into the photo */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .dish__ingredients {
   display: flex; flex-wrap: wrap; gap: var(--s1);
   margin-block-start: var(--s1);
+  max-block-size: 4.6rem;   /* two chip rows max on mobile */
+  overflow: hidden;
 }
 .dish__ingredients li {
-  font-size: .74rem;
+  font-size: clamp(.7rem, 2.4vw, .74rem);
   letter-spacing: .04em;
   color: var(--ink-soft);
   border: 1px solid var(--ink-faint);
@@ -360,7 +373,7 @@ html[lang="ar"] .dish__name { letter-spacing: 0; }   /* Arabic never tracks nega
 }
 .dish__price {
   font-family: var(--font-display);
-  font-size: 1.9rem;
+  font-size: clamp(1.6rem, 6vw, 1.9rem);
   font-weight: 600;
   color: var(--ink);
 }
@@ -394,7 +407,7 @@ html[lang="ar"] .dish__name { letter-spacing: 0; }   /* Arabic never tracks nega
   padding-inline: var(--s5);
   border-radius: 999px;
   font-weight: 600;
-  font-size: .92rem;
+  font-size: clamp(.85rem, 3vw, .92rem);
   letter-spacing: .04em;
   transition: transform .2s var(--ease-out), box-shadow .3s var(--ease-out), background .3s;
 }

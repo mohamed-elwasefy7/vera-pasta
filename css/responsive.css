@@ -5,16 +5,30 @@
 
 /* Small phones (<= 360px) — tighten */
 @media (max-width: 360px) {
-  .dish__figure { inline-size: min(74vw, 36dvh); }
+  .dish__figure { inline-size: min(64vw, 32dvh); }
   .dish__name { font-size: 1.7rem; }
-  .dish__desc { font-size: .88rem; }
 }
 
-/* Short viewports (phones with toolbars) */
+/* Short viewports (phones with toolbars, iPhone SE) — compress, never overlap */
 @media (max-height: 700px) and (orientation: portrait) {
-  .dish__figure { inset-block-start: calc(var(--nav-h) * .7); inline-size: min(66vw, 36dvh); }
+  .dish { gap: var(--s2); padding-block-start: calc(var(--nav-h) + var(--s1)); }
+  .dish__figure { inline-size: min(56vw, 30dvh); }
   .dish__content { gap: .45rem; }
-  .dish__desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .dish__desc { -webkit-line-clamp: 2; }
+  .dish__ingredients { max-block-size: 2.2rem; }   /* single chip row */
+  .dish__inspiration { display: none; }
+  .dish__floats { block-size: 38dvh; }
+
+  .hero--v2 { --hero-fig: min(52vw, 28dvh); }
+  .wordmark--hero-v2 { font-size: clamp(2.4rem, 13vw, 3.4rem); }
+  .hero__intro { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .hero__ctas { margin-block-start: var(--s2); }
+  .hero__cats { margin-block-start: var(--s2); }
+  .hero .swipe-hint { display: none; }   /* chips already signal interaction */
+
+  .chef__figure { inline-size: min(52vw, 28dvh); }
+  .chef__name { font-size: clamp(2rem, 9vw, 2.8rem); }
+  .dish__inspiration { display: none; }
 }
 
 /* Tablet portrait */
@@ -45,14 +59,22 @@
     gap: .35em;
     font-size: clamp(4rem, 9vw, 8.5rem);
   }
-  .hero__line--overlap { margin-block-start: 0; text-shadow: none; }
   .hero__divider { inline-size: 1px; block-size: .8em; }
   .hero--v2 { --hero-fig: min(26vw, 36dvh); }
   .hero--v2 .hero__content { padding-block-start: calc(var(--hero-fig) * .6); }
   .hero__ctas { grid-auto-flow: column; gap: var(--s4); }
 
-  /* confine dish floats to the figure half so they never sit over text */
-  .dish__floats { inset-inline-end: 48%; }
+  /* restore the approved desktop dish presentation exactly */
+  .dish { padding-block-start: 0; }
+  .dish__desc {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+  .dish__ingredients { max-block-size: none; overflow: visible; }
+  .dish__floats { inset-inline-end: 48%; block-size: 100%; }
+  .chef__content { margin-block-start: calc(var(--s4) * -1); }
+  .chef__quote { display: block; -webkit-line-clamp: unset; overflow: visible; }
 
   .craft__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); max-inline-size: 56rem; }
   .narrative__content { max-inline-size: 38rem; }

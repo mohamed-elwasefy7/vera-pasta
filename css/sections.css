@@ -216,11 +216,17 @@ body[data-mood="olive"] .dish__texture,
 body[data-mood="terracotta"] .dish__texture,
 body[data-mood="espresso"] .dish__texture { opacity: .08; }
 
-.dish__floats { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+/* floats live only in the figure zone on mobile — never near the text */
+.dish__floats {
+  position: absolute;
+  inset-block-start: 0; inset-inline: 0;
+  block-size: 46dvh;
+  pointer-events: none;
+  z-index: 0;
+}
 .dish__floats-far, .dish__floats-near { position: absolute; inset: 0; }
 
 .dish__figure { z-index: 1; }
-.dish__content { z-index: 2; }
 
 .dish__inspiration {
   font-family: var(--font-editorial);
@@ -264,7 +270,14 @@ html[dir="rtl"] .dish__price-rule { transform-origin: 100% 50%; }
   justify-items: center;
   gap: var(--s2);
   max-inline-size: 30rem;
-  margin-block-start: calc(var(--s4) * -1);
+  /* no photo overlap on mobile; desktop restores the editorial kiss */
+  margin-block-start: 0;
+}
+.chef__quote {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .chef__name {
   font-family: var(--font-display);
@@ -442,12 +455,13 @@ html.js-motion .hero__divider { transform: scaleX(0); }
   position: absolute; z-index: 1;
   inset-block-start: calc(var(--nav-h) * 1.05);
   inset-inline: 0;
-  margin-inline: auto;      /* centered without transform — GSAP owns transforms */
+  margin: 0 auto;           /* centered without transform — GSAP owns transforms;
+                               kills the v1 base rule's margin-block-start */
   inline-size: var(--hero-fig);
 }
 .hero--v2 .hero__content {
   position: relative; z-index: 2;
-  padding-block-start: calc(var(--nav-h) * 1.05 + var(--hero-fig) * .78);
+  padding-block-start: calc(var(--nav-h) * 1.05 + var(--hero-fig) + var(--s3));
 }
 .wordmark--hero-v2 {
   display: grid;
@@ -462,10 +476,8 @@ html.js-motion .hero__divider { transform: scaleX(0); }
   direction: ltr;
 }
 .hero__line { display: inline-block; }
-.hero__line--overlap {
-  margin-block-start: -.55em;   /* pulls VERA up over the plate's lower third */
-  text-shadow: 0 2px 24px rgba(245, 239, 224, .45);
-}
+/* mobile: the wordmark never covers the plate — food stays the hero */
+.hero__line--overlap { margin-block-start: 0; }
 .hero__divider {
   inline-size: 2.2em;
   block-size: 1px;
@@ -499,7 +511,7 @@ html.js-motion .hero__divider { transform: scaleX(0); }
   max-inline-size: 22rem;
 }
 .hero__cat {
-  min-block-size: 40px;
+  min-block-size: 48px;
   padding-inline: var(--s3);
   border: 1px solid color-mix(in srgb, var(--oro) 55%, transparent);
   border-radius: 999px;
