@@ -13,6 +13,10 @@ let observer = null;
 let rebuilding = false;
 
 export function getActiveIndex() {
+  // derive from the real scroll position — IO state can lag instant jumps
+  if (container?.clientHeight) {
+    return clamp(Math.round(container.scrollTop / container.clientHeight), 0, Math.max(screens.length - 1, 0));
+  }
   return activeIndex;
 }
 
