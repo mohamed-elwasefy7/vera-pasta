@@ -1,0 +1,252 @@
+/* VERA PASTA — swipe.js
+   Snap engine. CSS scroll-snap is the source of truth (native touch);
+   GSAP Observer intercepts wheel + keyboard on desktop and tweens one
+   page per gesture. Lenis is deliberately absent — it breaks snap.   */
+
+import { $, $$, emit, t, prefersReducedMotion, clamp, announce } from "./utils.js";
+
+let container;
+let screens = [];
+let activeIndex = 0;
+let locked = false;
+let observer = null;
+let rebuilding = false;
+
+export function getActiveIndex() {
+  return activeIndex;
+}
+
+export function getScreens() {
+  return screens;
+}
+
+export function init() {
+  container = $("#snap");
+  bindScreens();
+  initWheelAndKeys();
+  initHash();
+  initGotoButtons();
+}
+
+/* re-bind after a language-switch re-render */
+export function rebind(keepIndex = 0) {
+  rebuilding = true;
+  bindScreens();
+  goTo(keepIndex, true);
+  requestAnimationFrame(() => { rebuilding = false; });
+}
+
+function bindScreens() {
+  screens = $$(".screen", container);
+  buildRail();
+  observeActive();
+}
+
+/* ---------- active tracking ---------- */
+let io = null;
+
+function observeActive() {
+  io?.disconnect();
+  io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const index = screens.indexOf(entry.target);
+        if (index === -1 || index === activeIndex && !rebuilding) continue;
+        setActive(index);
+      }
+    },
+    { root: container, threshold: 0.6 },
+  );
+  screens.forEach((s) => io.observe(s));
+}
+
+function setActive(index) {
+  activeIndex = index;
+  const section = screens[index];
+  const dishId = section.classList.contains("dish") ? section.id : null;
+  updateRail(index);
+  updateHash(section);
+  announceScreen(section, index);
+  emit("dish:active", { index, section, dishId, mood: section.dataset.mood || "cream" });
+}
+
+function announceScreen(section, index) {
+  if (section.classList.contains("dish")) {
+    const dishes = screens.filter((s) => s.classList.contains("dish"));
+    const i = dishes.indexOf(section) + 1;
+    announce(`${t("dishOf", { i, n: dishes.length })} — ${section.getAttribute("aria-label")}`);
+  } else {
+    announce(section.getAttribute("aria-label") || "");
+  }
+}
+
+/* ---------- programmatic paging ---------- */
+let pageTween = null;
+
+function settleTween() {
+  container.classList.remove("is-tweening");
+  // cooldown swallows trailing trackpad inertia
+  setTimeout(() => { locked = false; }, 150);
+}
+
+export function goTo(index, instant = false) {
+  index = clamp(index, 0, screens.length - 1);
+  const top = index * container.clientHeight;
+
+  // hidden documents get no animation frames — jump instantly
+  if (instant || prefersReducedMotion() || !window.gsap || document.visibilityState === "hidden") {
+    pageTween?.kill();
+    container.scrollTo({ top, behavior: "auto" });
+    return;
+  }
+  pageTween?.kill();
+  locked = true;
+  container.classList.add("is-tweening");
+  // GSAP can't tween scrollTop on a DOM element directly — use a proxy
+  const proxy = { v: container.scrollTop };
+  pageTween = gsap.to(proxy, {
+    v: top,
+    duration: 0.7,
+    ease: "power2.inOut",
+    onUpdate: () => { container.scrollTop = proxy.v; },
+    onComplete: settleTween,
+    onInterrupt: settleTween,
+  });
+}
+
+/* ---------- wheel + keyboard (desktop) ---------- */
+function initWheelAndKeys() {
+  if (!prefersReducedMotion() && window.Observer) {
+    gsap.registerPlugin(Observer);
+    observer = Observer.create({
+      target: container,
+      type: "wheel",
+      preventDefault: true,
+      tolerance: 8,
+      onDown: () => step(1),   // wheel down → next
+      onUp: () => step(-1),    // wheel up → previous
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.defaultPrevented) return;
+    const sheet = $("#order-sheet");
+    if (sheet?.open) return;
+    const el = document.activeElement;
+    const tag = el?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || el?.isContentEditable) return;
+    // Space must keep activating focused controls (button click fires on keyup
+    // only if keydown wasn't cancelled) — page with Space only from the page itself
+    const focusIsInteractive =
+      tag === "BUTTON" || tag === "A" || tag === "SELECT" || tag === "SUMMARY";
+
+    switch (e.key) {
+      case "ArrowDown":
+      case "PageDown":
+        e.preventDefault(); step(1); break;
+      case " ":
+        if (focusIsInteractive) return;
+        e.preventDefault(); step(e.shiftKey ? -1 : 1); break;
+      case "ArrowUp":
+      case "PageUp":
+        e.preventDefault(); step(-1); break;
+      case "Home":
+        e.preventDefault(); goTo(0); break;
+      case "End":
+        e.preventDefault(); goTo(screens.length - 1); break;
+    }
+  });
+}
+
+function step(dir) {
+  if (locked) return;
+  // derive index from real scroll position (touch may have moved it)
+  const current = Math.round(container.scrollTop / container.clientHeight);
+  goTo(current + dir);
+}
+
+/* ---------- dot rail ---------- */
+function buildRail() {
+  const rail = $("#rail");
+  rail.setAttribute("aria-label", t("railAria"));
+  rail.innerHTML = "";
+  screens.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", s.getAttribute("aria-label") || `Screen ${i + 1}`);
+    if (i === activeIndex) b.setAttribute("aria-current", "true");
+    b.addEventListener("click", () => goTo(i));
+    rail.append(b);
+  });
+}
+
+function updateRail(index) {
+  $$("#rail button").forEach((b, i) => {
+    if (i === index) b.setAttribute("aria-current", "true");
+    else b.removeAttribute("aria-current");
+  });
+}
+
+/* ---------- hash deep-links ---------- */
+let hashTimer;
+
+function updateHash(section) {
+  clearTimeout(hashTimer);
+  hashTimer = setTimeout(() => {
+    const id = section.id || "";
+    if (id && id !== "top") history.replaceState(null, "", `#${id}`);
+    else history.replaceState(null, "", location.pathname + location.search);
+  }, 300);
+}
+
+function initHash() {
+  const id = location.hash.slice(1);
+  if (!id) return;
+  const target = screens.findIndex((s) => s.id === id);
+  if (target > 0) goTo(target, true);
+}
+
+/* buttons with data-goto (hero CTA, nav logo) */
+function initGotoButtons() {
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-goto]");
+    if (!el) return;
+    e.preventDefault();
+    goTo(Number(el.dataset.goto));
+  });
+}
+
+/* ---------- nav auto-hide (container scroll, rAF-throttled) ---------- */
+export function initNavAutoHide() {
+  const nav = $("#nav");
+  let lastTop = 0;
+  let ticking = false;
+
+  container.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const top = container.scrollTop;
+      const delta = top - lastTop;
+      const onEdges = top < container.clientHeight * 0.5 ||
+        top > container.scrollHeight - container.clientHeight * 1.5;
+      if (onEdges || delta < -4) nav.dataset.hidden = "false";
+      else if (delta > 24) nav.dataset.hidden = "true";
+      lastTop = top;
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // always reveal after a snap settles
+  const settle = () => { nav.dataset.hidden = "false"; };
+  if ("onscrollend" in container) {
+    container.addEventListener("scrollend", settle);
+  } else {
+    let t2;
+    container.addEventListener("scroll", () => {
+      clearTimeout(t2);
+      t2 = setTimeout(settle, 180);
+    }, { passive: true });
+  }
+}

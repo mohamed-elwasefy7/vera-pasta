@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="VERA PASTA">
+  <style>
+    .wm { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; font-weight: 600; letter-spacing: .18em; }
+  </style>
+  <text x="24" y="62" class="wm" font-size="44" fill="#1F1815">VERA</text>
+  <rect x="196" y="26" width="1.5" height="44" fill="#E8C97A"/>
+  <text x="222" y="62" class="wm" font-size="44" fill="#1F1815">PASTA</text>
+  <text x="210" y="88" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="15" letter-spacing=".12em" fill="#8B2C1F">la vera cucina</text>
+</svg>

@@ -1,0 +1,249 @@
+{
+  "version": 1,
+  "restaurant": {
+    "name": "VERA PASTA",
+    "tagline": "La Vera Cucina Italiana",
+    "instagram": "https://instagram.com/REPLACE_ME",
+    "whatsapp": "+9665XXXXXXXX",
+    "location": { "en": "Riyadh, Saudi Arabia", "ar": "الرياض، المملكة العربية السعودية" },
+    "mapsUrl": "https://maps.app.goo.gl/REPLACE_ME",
+    "hours": [
+      { "days": { "en": "Every day", "ar": "يومياً" }, "open": "12:00", "close": "01:00" }
+    ],
+    "orderLinks": {
+      "jahez": "https://jahez.link/REPLACE_ME",
+      "hungerstation": "https://hungerstation.com/REPLACE_ME",
+      "keeta": "https://keeta.com/REPLACE_ME"
+    }
+  },
+  "categories": [
+    { "id": "pasta", "label": { "en": "Pasta", "ar": "باستا" }, "order": 1 },
+    { "id": "salads", "label": { "en": "Insalate", "ar": "سلطات" }, "order": 2 },
+    { "id": "box", "label": { "en": "Vera Box", "ar": "فيرا بوكس" }, "order": 3 }
+  ],
+  "dishes": [
+    {
+      "id": "pollo-alfredo",
+      "category": "pasta",
+      "name": { "en": "Pollo Alfredo", "ar": "بولو ألفريدو" },
+      "subtitle": "Cremoso, come si deve",
+      "description": {
+        "en": "Grilled chicken folded through silk-smooth Alfredo — fettuccine that carries the cream lightly, never drowning in it.",
+        "ar": "دجاج مشوي يتقلّب في صوص ألفريدو حريري — فيتوتشيني تحمل الكريمة بخفّة، من غير ما تغرق فيها."
+      },
+      "ingredients": {
+        "en": ["Fettuccine", "Grilled chicken", "Cream", "Parmesan", "Mushroom", "Black pepper"],
+        "ar": ["فيتوتشيني", "دجاج مشوي", "كريمة", "بارميزان", "مشروم", "فلفل أسود"]
+      },
+      "price": 34, "currency": "SAR",
+      "image": "pollo-alfredo",
+      "background": "cream",
+      "presentation": "plate",
+      "featured": true, "available": true,
+      "calories": 640, "prepTime": 12,
+      "vegetarian": false, "spicy": false, "chefChoice": false,
+      "tags": ["creamy", "classic"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "pomodoro-parmesan",
+      "category": "pasta",
+      "name": { "en": "Pomodoro Parmesan", "ar": "بومودورو بارميزان" },
+      "subtitle": "Il rosso che sa d'Italia",
+      "description": {
+        "en": "Tomato simmered low and slow, aged Parmesan over golden strands — the taste of an Italian Sunday.",
+        "ar": "طماطم على نار هادئة وبارميزان معتّق فوق خيوط الباستا الذهبية — طعم يوم الأحد الإيطالي."
+      },
+      "ingredients": {
+        "en": ["Spaghetti", "Tomato sauce", "Parmesan", "Basil", "Olive oil", "Garlic"],
+        "ar": ["سباجيتي", "صوص طماطم", "بارميزان", "ريحان", "زيت زيتون", "ثوم"]
+      },
+      "price": 29, "currency": "SAR",
+      "image": "pomodoro-parmesan",
+      "background": "terracotta",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 540, "prepTime": 10,
+      "vegetarian": true, "spicy": false, "chefChoice": false,
+      "tags": ["tomato", "vegetarian"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "vera-verde",
+      "category": "pasta",
+      "name": { "en": "VERA Verde", "ar": "فيرا فيردي" },
+      "subtitle": "Basilico fresco, sempre",
+      "description": {
+        "en": "Hand-blended basil pesto hugging every ridge of penne — green, bright, unmistakably fresh.",
+        "ar": "بيستو ريحان طازج يعانق كل تجعيدة في البيني — أخضر، منعش، وطازج بلا منازع."
+      },
+      "ingredients": {
+        "en": ["Penne", "Basil pesto", "Parmesan", "Pine nuts", "Olive oil"],
+        "ar": ["بيني", "بيستو ريحان", "بارميزان", "صنوبر", "زيت زيتون"]
+      },
+      "price": 32, "currency": "SAR",
+      "image": "vera-verde",
+      "background": "olive",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 580, "prepTime": 11,
+      "vegetarian": true, "spicy": false, "chefChoice": false,
+      "tags": ["pesto", "vegetarian"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "rose-parmigiano",
+      "category": "pasta",
+      "name": { "en": "Rosé Parmigiano", "ar": "روزيه بارميجيانو" },
+      "subtitle": "Dove la panna incontra il pomodoro",
+      "description": {
+        "en": "Where cream meets tomato: a blushing rosé sauce, rounded off with shaved Parmigiano.",
+        "ar": "حيث تلتقي الكريمة بالطماطم: صوص روزيه وردي ناعم، يكتمل ببارميجيانو مبشور."
+      },
+      "ingredients": {
+        "en": ["Fettuccine", "Rosé sauce", "Parmigiano", "Cream", "Tomato"],
+        "ar": ["فيتوتشيني", "صوص روزيه", "بارميجيانو", "كريمة", "طماطم"]
+      },
+      "price": 31, "currency": "SAR",
+      "image": "rose-parmigiano",
+      "background": "rose",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 600, "prepTime": 11,
+      "vegetarian": true, "spicy": false, "chefChoice": false,
+      "tags": ["rose", "creamy"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "lasagna-al-forno",
+      "category": "pasta",
+      "name": { "en": "Lasagna al Forno", "ar": "لازانيا الفرن" },
+      "subtitle": "Strati di domenica",
+      "description": {
+        "en": "Layer upon layer of slow ragù, béchamel and pasta — baked until the edges whisper caramel.",
+        "ar": "طبقة فوق طبقة من الراجو المطهو ببطء والبشاميل والباستا — في الفرن حتى تتحمّص الأطراف."
+      },
+      "ingredients": {
+        "en": ["Pasta sheets", "Beef ragù", "Béchamel", "Mozzarella", "Parmesan"],
+        "ar": ["شرائح باستا", "راجو لحم", "بشاميل", "موتزاريلا", "بارميزان"]
+      },
+      "price": 36, "currency": "SAR",
+      "image": "lasagna-al-forno",
+      "background": "espresso",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 690, "prepTime": 18,
+      "vegetarian": false, "spicy": false, "chefChoice": false,
+      "tags": ["baked", "beef"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "gamberi-rosa",
+      "category": "pasta",
+      "name": { "en": "Gamberi Rosa", "ar": "جامبيري روزا" },
+      "subtitle": "Gamberi, aglio e coraggio",
+      "description": {
+        "en": "Plump shrimp seared with garlic, tossed through rosé silk — the boldest plate in the house.",
+        "ar": "جمبري طري محمّر بالثوم، يتقلّب في حرير الروزيه — أجرأ طبق في البيت."
+      },
+      "ingredients": {
+        "en": ["Linguine", "Shrimp", "Garlic", "Rosé sauce", "Chili flakes"],
+        "ar": ["لينجويني", "جمبري", "ثوم", "صوص روزيه", "رقائق فلفل حار"]
+      },
+      "price": 42, "currency": "SAR",
+      "image": "gamberi-rosa",
+      "background": "rose",
+      "presentation": "plate",
+      "featured": true, "available": true,
+      "calories": 560, "prepTime": 14,
+      "vegetarian": false, "spicy": true, "chefChoice": true,
+      "tags": ["seafood", "signature"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "greenova",
+      "category": "salads",
+      "name": { "en": "Greenova", "ar": "جرينوفا" },
+      "subtitle": "Verde e viva",
+      "description": {
+        "en": "Crisp leaves, garden herbs and a bright vinaigrette — the fresh pause between two pastas.",
+        "ar": "أوراق مقرمشة وأعشاب طازجة مع صوص فينيجريت منعش — استراحة خضراء بين طبقين من الباستا."
+      },
+      "ingredients": {
+        "en": ["Mixed greens", "Cherry tomato", "Cucumber", "Herbs", "Vinaigrette"],
+        "ar": ["خضروات ورقية", "طماطم كرزية", "خيار", "أعشاب", "فينيجريت"]
+      },
+      "price": 24, "currency": "SAR",
+      "image": "greenova",
+      "background": "sage",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 210, "prepTime": 5,
+      "vegetarian": true, "spicy": false, "chefChoice": false,
+      "tags": ["fresh", "vegetarian"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "tunova",
+      "category": "salads",
+      "name": { "en": "Tunova", "ar": "تونوفا" },
+      "subtitle": "Il mare in insalata",
+      "description": {
+        "en": "Sea-fresh tuna over crunchy greens and olives, dressed in lemon and olive oil.",
+        "ar": "تونة طازجة فوق خضروات مقرمشة وزيتون، بصوص الليمون وزيت الزيتون."
+      },
+      "ingredients": {
+        "en": ["Tuna", "Mixed greens", "Olives", "Corn", "Lemon dressing"],
+        "ar": ["تونة", "خضروات ورقية", "زيتون", "ذرة", "صوص ليمون"]
+      },
+      "price": 27, "currency": "SAR",
+      "image": "tunova",
+      "background": "sage",
+      "presentation": "plate",
+      "featured": false, "available": true,
+      "calories": 280, "prepTime": 6,
+      "vegetarian": false, "spicy": false, "chefChoice": false,
+      "tags": ["tuna", "fresh"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    },
+    {
+      "id": "pastanine-box",
+      "category": "box",
+      "name": { "en": "PastaNine Box", "ar": "بوكس باستا ناين" },
+      "subtitle": "Nove assaggi, una tavola",
+      "description": {
+        "en": "Nine cups. Three sauces. One table. The full VERA experience, made to be shared.",
+        "ar": "تسعة أكواب. ثلاثة صوصات. طاولة واحدة. تجربة فيرا الكاملة، صُنعت لتُشارَك."
+      },
+      "ingredients": {
+        "en": ["3× Alfredo", "3× Pesto", "3× Rosé", "Parmesan", "Cherry tomato"],
+        "ar": ["3× ألفريدو", "3× بيستو", "3× روزيه", "بارميزان", "طماطم كرزية"]
+      },
+      "price": 89, "currency": "SAR",
+      "image": "pastanine-box",
+      "background": "espresso",
+      "presentation": "card",
+      "featured": true, "available": true,
+      "calories": 1750, "prepTime": 20,
+      "vegetarian": false, "spicy": false, "chefChoice": true,
+      "tags": ["sharing", "signature"],
+      "orderLinks": { "jahez": "", "hungerstation": "", "keeta": "" }
+    }
+  ],
+  "drinks": [
+    { "id": "pepsi", "name": { "en": "Pepsi", "ar": "بيبسي" }, "price": 7, "image": "pepsi", "available": true },
+    { "id": "diet-pepsi", "name": { "en": "Diet Pepsi", "ar": "بيبسي دايت" }, "price": 7, "image": "diet-pepsi", "available": true },
+    { "id": "seven-up", "name": { "en": "7UP", "ar": "سفن أب" }, "price": 7, "image": "seven-up", "available": true },
+    { "id": "diet-seven-up", "name": { "en": "Diet 7UP", "ar": "سفن أب دايت" }, "price": 7, "image": "diet-seven-up", "available": true },
+    { "id": "mirinda-orange", "name": { "en": "Mirinda Orange", "ar": "ميرندا برتقال" }, "price": 7, "image": "mirinda-orange", "available": true },
+    { "id": "mirinda-lemon", "name": { "en": "Mirinda Citrus", "ar": "ميرندا حمضيات" }, "price": 7, "image": "mirinda-lemon", "available": true },
+    { "id": "mountain-dew", "name": { "en": "Mountain Dew", "ar": "ماونتن ديو" }, "price": 7, "image": "mountain-dew", "available": true },
+    { "id": "kinza-cola", "name": { "en": "Kinza Cola", "ar": "كينزا كولا" }, "price": 6, "image": "kinza-cola", "available": true },
+    { "id": "kinza-diet-cola", "name": { "en": "Kinza Cola Diet", "ar": "كينزا كولا دايت" }, "price": 6, "image": "kinza-diet-cola", "available": true },
+    { "id": "kinza-lemon", "name": { "en": "Kinza Lemon", "ar": "كينزا ليمون" }, "price": 6, "image": "kinza-lemon", "available": true },
+    { "id": "kinza-diet-lemon", "name": { "en": "Kinza Lemon Diet", "ar": "كينزا ليمون دايت" }, "price": 6, "image": "kinza-diet-lemon", "available": true },
+    { "id": "kinza-lemon-mix", "name": { "en": "Kinza Lemon Mix", "ar": "كينزا ليمون ميكس" }, "price": 6, "image": "kinza-lemon-mix", "available": true },
+    { "id": "kinza-orange", "name": { "en": "Kinza Orange", "ar": "كينزا برتقال" }, "price": 6, "image": "kinza-orange", "available": true },
+    { "id": "small-water-nova", "name": { "en": "Nova Water", "ar": "مياه نوفا" }, "price": 3, "image": "small-water-nova", "available": true }
+  ]
+}
