@@ -1,7 +1,8 @@
-/* VERA PASTA — parallax.js
-   ScrollTrigger scrubbed parallax inside the snap container
-   (ScrollTrigger reads positions; it never drives the snap)
-   + hero floating particles. Fully skipped under reduced motion. */
+/* VERA PASTA — parallax.js (v2)
+   Multi-layer ScrollTrigger scrubs inside the snap container.
+   Every layer is a transform-only scrub with ease:none; at snap rest
+   all layers sit at 0, so nothing is misaligned when idle.
+   Gallery's internal parallax lives in story.js (rect math, RTL-safe). */
 
 import { $, $$, prefersReducedMotion } from "./utils.js";
 
@@ -10,9 +11,33 @@ let triggers = [];
 export function init() {
   if (prefersReducedMotion() || !window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
-  spawnParticles();
+  spawnParticles(".hero__particles", 12);
   bind();
 }
+
+/* per-dish layer table: [selector, amplitude yPercent, scrub lag] */
+const DISH_LAYERS = [
+  [".dish__bg", 2, 1.2],
+  [".dish__texture", 4, 1.0],
+  [".dish__floats-far", 8, 0.8],
+  [".dish__floats-near", 12, 0.6],
+  [".dish__figure", 6, 0.6],
+  [".dish__content", 2.5, 0.9],
+  [".dish__foot", 1.2, 1.1],
+];
+
+const NARRATIVE_LAYERS = [
+  [".section-texture", 4, 1.0],
+  [".narrative__content", 2.5, 0.9],
+  [".philosophy__stack", 3, 0.9],
+  [".craft__grid", 2.5, 1.0],
+  [".menu-intro__floats", 8, 0.8],
+  [".chef__figure", 6, 0.6],
+  [".chef__content", 2.5, 0.9],
+  [".dish__floats-far", 8, 0.8],
+  [".dish__floats-near", 12, 0.6],
+  [".closing__stack", 2, 1.0],
+];
 
 export function bind() {
   triggers.forEach((st) => st.kill());
@@ -21,46 +46,46 @@ export function bind() {
 
   const container = $("#snap");
 
-  $$(".dish", container).forEach((section) => {
-    const figure = $(".dish__figure", section);
-    const content = $(".dish__content", section);
-    if (!figure) return;
-    // layers drift at different speeds while the screen passes through
-    const tween = gsap.fromTo(figure, { yPercent: 6 }, {
-      yPercent: -6,
+  const scrub = (el, section, amp, lag) => {
+    const tween = gsap.fromTo(el, { yPercent: amp }, {
+      yPercent: -amp,
       ease: "none",
       scrollTrigger: {
         trigger: section,
         scroller: container,
         start: "top bottom",
         end: "bottom top",
-        scrub: 0.6,
+        scrub: lag,
+        fastScrollEnd: true,
       },
     });
     triggers.push(tween.scrollTrigger);
-    if (content) {
-      const t2 = gsap.fromTo(content, { yPercent: 2.5 }, {
-        yPercent: -2.5,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          scroller: container,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.9,
-        },
-      });
-      triggers.push(t2.scrollTrigger);
-    }
+  };
+
+  $$(".dish", container).forEach((section) => {
+    DISH_LAYERS.forEach(([sel, amp, lag]) => {
+      const el = section.querySelector(sel);
+      if (el) scrub(el, section, amp, lag);
+    });
   });
+
+  $$(".narrative", container).forEach((section) => {
+    if (section.id === "gallery") return; // gallery parallax is horizontal, handled in story.js
+    NARRATIVE_LAYERS.forEach(([sel, amp, lag]) => {
+      const el = section.querySelector(sel);
+      if (el) scrub(el, section, amp, lag);
+    });
+  });
+
+  // closing screen particles (idempotent)
+  spawnParticles(".closing__particles", 9);
 }
 
-/* ---------- hero particles ---------- */
-function spawnParticles() {
-  const wrap = $(".hero__particles");
+/* ---------- ambient particles (hero + closing) ---------- */
+export function spawnParticles(containerSel, count = 12) {
+  const wrap = $(containerSel);
   if (!wrap || wrap.childElementCount) return;
-  const COUNT = 12;
-  for (let i = 0; i < COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const p = document.createElement("span");
     p.style.insetInlineStart = `${8 + Math.random() * 84}%`;
     p.style.insetBlockStart = `${10 + Math.random() * 78}%`;

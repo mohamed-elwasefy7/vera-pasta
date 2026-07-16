@@ -207,13 +207,17 @@ function initHash() {
   if (target > 0) goTo(target, true);
 }
 
-/* buttons with data-goto (hero CTA, nav logo) */
+/* buttons with data-goto (hero CTAs, nav logo, chef "view in menu")
+   — value is a numeric index OR a section id */
 function initGotoButtons() {
   document.addEventListener("click", (e) => {
     const el = e.target.closest("[data-goto]");
     if (!el) return;
     e.preventDefault();
-    goTo(Number(el.dataset.goto));
+    const v = el.dataset.goto;
+    const n = Number(v);
+    const index = Number.isNaN(n) ? screens.findIndex((s) => s.id === v) : n;
+    if (index >= 0) goTo(index);
   });
 }
 

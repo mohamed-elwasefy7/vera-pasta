@@ -1,16 +1,25 @@
 /* VERA PASTA — menu.js
-   Fetch + validate menu.json · render dish screens, drinks, finale
-   · order sheet · favorite · share. Everything reads from data. */
+   Data fetch/validation + full v2 screen composition:
+   [story, philosophy, craft, menu-intro] → dishes → drinks →
+   chef signature → gallery → order → closing.
+   Everything reads from data; language re-render rebuilds it all. */
 
 import {
-  $, $$, emit, t, getLang, storage, applyImage, toast, ICONS,
+  $, $$, emit, t, getLang, storage, toast, ICONS,
 } from "./utils.js";
+import * as story from "./story.js";
+import { mountFloats } from "./ingredients.js";
 
 let data = null;
 const REQUIRED = ["id", "name", "price", "image", "background"];
 
 export function getData() {
   return data;
+}
+
+export function getSignatureDish() {
+  if (!data) return null;
+  return data.dishes.find((d) => d.signature) ?? data.dishes.find((d) => d.chefChoice) ?? null;
 }
 
 export async function loadData() {
@@ -37,95 +46,126 @@ export function renderError() {
     </section>`;
 }
 
-/* ---------- render ---------- */
+/* ---------- render: the 19-screen composition ---------- */
 export function render() {
   const main = $("#snap");
   // clear everything after the hero (re-render on language switch)
   $$(".screen", main).forEach((s, i) => { if (i > 0) s.remove(); });
 
+  const st = story.getStory();
+  const append = (node) => { if (node) main.append(node); };
+
+  if (st) {
+    append(story.buildStory());
+    append(story.buildPhilosophy());
+    append(story.buildCraft());
+    append(story.buildMenuIntro());
+  }
+
   const catLabel = (id) => {
     const cat = data.categories?.find((c) => c.id === id);
     return cat ? t(cat.label) : id;
   };
-
   const tpl = $("#dish-template");
   const favs = new Set(storage.get("vera:favorites", []));
-
   data.dishes.forEach((dish) => {
-    const node = tpl.content.firstElementChild.cloneNode(true);
-    node.id = dish.id;
-    node.dataset.mood = dish.background;
-    node.dataset.presentation = dish.presentation || "plate";
-    node.setAttribute("aria-label", t(dish.name));
-
-    const img = $(".dish__img", node);
-    img.alt = `${t(dish.name)} — ${dish.subtitle || ""}`;
-    img.dataset.image = dish.image;
-
-    $(".dish__kicker", node).textContent = catLabel(dish.category);
-    $(".dish__name", node).textContent = t(dish.name);
-
-    const sub = $(".dish__subtitle", node);
-    if (dish.subtitle) {
-      const span = $("span", sub);
-      span.textContent = dish.subtitle;
-      span.lang = "it";
-    } else sub.remove();
-
-    $(".dish__desc", node).textContent = t(dish.description);
-
-    const ul = $(".dish__ingredients", node);
-    (t(dish.ingredients) || []).forEach((ing) => {
-      const li = document.createElement("li");
-      li.textContent = ing;
-      ul.append(li);
-    });
-
-    $(".dish__price-num", node).textContent = dish.price;
-    $(".dish__price-cur", node).textContent = t("sar");
-
-    const cal = $(".dish__cal", node);
-    if (dish.calories) cal.innerHTML = `${ICONS.flame}<span>${dish.calories} ${t("kcal")}</span>`;
-    else cal.remove();
-
-    const time = $(".dish__time", node);
-    if (dish.prepTime) time.innerHTML = `${ICONS.clock}<span>${dish.prepTime} ${t("min")}</span>`;
-    else time.remove();
-
-    const badges = $(".dish__badges", node);
-    const badge = (icon, label) => {
-      const b = document.createElement("span");
-      b.className = "badge";
-      b.innerHTML = `${icon}<span>${label}</span>`;
-      badges.append(b);
-    };
-    if (dish.chefChoice) badge(ICONS.toque, t("chefChoice"));
-    if (dish.vegetarian) badge(ICONS.leaf, t("vegetarian"));
-    if (dish.spicy) badge(ICONS.chili, t("spicy"));
-
-    const orderBtn = $(".dish__order", node);
-    orderBtn.textContent = t("order");
-    orderBtn.addEventListener("click", () => openSheet(dish, orderBtn));
-
-    const favBtn = $(".dish__fav", node);
-    favBtn.innerHTML = ICONS.heart;
-    const isFav = favs.has(dish.id);
-    favBtn.setAttribute("aria-pressed", String(isFav));
-    favBtn.setAttribute("aria-label", t(isFav ? "unfavorite" : "favorite"));
-    favBtn.addEventListener("click", () => toggleFavorite(dish.id, favBtn));
-
-    const shareBtn = $(".dish__share", node);
-    shareBtn.innerHTML = ICONS.share;
-    shareBtn.setAttribute("aria-label", t("share"));
-    shareBtn.addEventListener("click", () => share(dish));
-
-    main.append(node);
+    main.append(buildDish(dish, tpl, catLabel, favs));
   });
 
-  if (data.drinks.length) main.append(renderDrinks());
-  main.append(renderFinale());
+  if (data.drinks.length) append(renderDrinks());
+
+  if (st) {
+    append(story.buildChef(getSignatureDish(), openSheet));
+    const gallery = story.buildGallery(data.dishes);
+    append(gallery);
+    story.initGalleryStrip(gallery);
+    append(story.buildOrder(data.restaurant || {}));
+    append(story.buildClosing(data.restaurant || {}));
+  }
 
   emit("menu:rendered", { dishes: data.dishes });
+}
+
+/* ---------- dish v2 ---------- */
+function buildDish(dish, tpl, catLabel, favs) {
+  const node = tpl.content.firstElementChild.cloneNode(true);
+  node.id = dish.id;
+  node.dataset.mood = dish.background;
+  node.dataset.presentation = dish.presentation || "plate";
+  node.setAttribute("aria-label", t(dish.name));
+
+  // L2 ghost texture word = first word of the Italian subtitle
+  $(".dish__texture", node).textContent = (dish.subtitle || "VERA").split(" ")[0];
+
+  // L3 floating ingredients
+  mountFloats(node, dish);
+
+  const img = $(".dish__img", node);
+  img.alt = `${t(dish.name)} — ${dish.subtitle || ""}`;
+  img.dataset.image = dish.image;
+
+  $(".dish__kicker", node).textContent = catLabel(dish.category);
+  $(".dish__name .reveal__inner", node).textContent = t(dish.name);
+
+  const sub = $(".dish__subtitle", node);
+  if (dish.subtitle) {
+    const span = $("span", sub);
+    span.textContent = dish.subtitle;
+    span.lang = "it";
+  } else sub.remove();
+
+  const insp = $(".dish__inspiration", node);
+  if (dish.inspiration) insp.textContent = t(dish.inspiration);
+  else insp.remove();
+
+  $(".dish__desc", node).textContent = t(dish.description);
+
+  const ul = $(".dish__ingredients", node);
+  (t(dish.ingredients) || []).forEach((ing) => {
+    const li = document.createElement("li");
+    li.textContent = ing;
+    ul.append(li);
+  });
+
+  $(".dish__price-num", node).textContent = dish.price;
+  $(".dish__price-cur", node).textContent = t("sar");
+
+  const cal = $(".dish__cal", node);
+  if (dish.calories) cal.innerHTML = `${ICONS.flame}<span>${dish.calories} ${t("kcal")}</span>`;
+  else cal.remove();
+
+  const time = $(".dish__time", node);
+  if (dish.prepTime) time.innerHTML = `${ICONS.clock}<span>${dish.prepTime} ${t("min")}</span>`;
+  else time.remove();
+
+  const badges = $(".dish__badges", node);
+  const badge = (icon, label) => {
+    const b = document.createElement("span");
+    b.className = "badge";
+    b.innerHTML = `${icon}<span>${label}</span>`;
+    badges.append(b);
+  };
+  if (dish.chefChoice) badge(ICONS.toque, t("chefChoice"));
+  if (dish.vegetarian) badge(ICONS.leaf, t("vegetarian"));
+  if (dish.spicy) badge(ICONS.chili, t("spicy"));
+
+  const orderBtn = $(".dish__order", node);
+  orderBtn.textContent = t("order");
+  orderBtn.addEventListener("click", () => openSheet(dish, orderBtn));
+
+  const favBtn = $(".dish__fav", node);
+  favBtn.innerHTML = ICONS.heart;
+  const isFav = favs.has(dish.id);
+  favBtn.setAttribute("aria-pressed", String(isFav));
+  favBtn.setAttribute("aria-label", t(isFav ? "unfavorite" : "favorite"));
+  favBtn.addEventListener("click", () => toggleFavorite(dish.id, favBtn));
+
+  const shareBtn = $(".dish__share", node);
+  shareBtn.innerHTML = ICONS.share;
+  shareBtn.setAttribute("aria-label", t("share"));
+  shareBtn.addEventListener("click", () => share(dish));
+
+  return node;
 }
 
 /* ---------- drinks screen ---------- */
@@ -134,23 +174,27 @@ function renderDrinks() {
   s.className = "screen drinks";
   s.id = "drinks";
   s.dataset.mood = "cream";
+  s.dataset.animate = "";
   s.setAttribute("aria-label", t("drinksTitle"));
   s.innerHTML = `
     <div class="drinks__head">
-      <p class="dish__kicker drinks__kicker" dir="ltr" lang="it">${t("drinksKicker")}</p>
-      <h2 class="drinks__title">${t("drinksTitle")}</h2>
+      <p class="dish__kicker drinks__kicker" dir="ltr" lang="it" data-enter="rise" data-enter-at="0">${t("drinksKicker")}</p>
+      <h2 class="drinks__title"><span class="reveal"><span class="reveal__inner" data-enter="mask" data-enter-at="0.08">${t("drinksTitle")}</span></span></h2>
     </div>
     <div class="drinks__strip" role="list" tabindex="0" aria-label="${t("drinksTitle")}"></div>`;
   const strip = $(".drinks__strip", s);
-  data.drinks.forEach((drink) => {
+  data.drinks.forEach((drink, i) => {
     const card = document.createElement("div");
     card.className = "drink-card";
     card.setAttribute("role", "listitem");
+    if (i < 6) {
+      card.dataset.enter = "pop";
+      card.dataset.enterAt = (0.25 + i * 0.05).toFixed(2);
+    }
     card.innerHTML = `
       <img alt="${t(drink.name)}" loading="lazy" decoding="async">
       <p class="drink-card__name">${t(drink.name)}</p>
       <p class="drink-card__price">${drink.price} ${t("sar")}</p>`;
-    // resolved lazily by the shared IntersectionObserver (animations.bindImages)
     const img = $("img", card);
     img.dataset.image = drink.image;
     img.dataset.dir = "assets/images/drinks/";
@@ -158,51 +202,6 @@ function renderDrinks() {
     strip.append(card);
   });
   return s;
-}
-
-/* ---------- finale ---------- */
-function renderFinale() {
-  const r = data.restaurant || {};
-  const s = document.createElement("section");
-  s.className = "screen finale";
-  s.id = "finale";
-  s.dataset.mood = "espresso";
-  s.setAttribute("aria-label", t("screenFinale"));
-
-  const hours = (r.hours || [])
-    .map((h) => `${t(h.days)} · ${h.open}–${h.close}`)
-    .join(" — ");
-
-  const links = Object.entries(r.orderLinks || {})
-    .filter(([, url]) => url && !url.includes("REPLACE_ME"))
-    .map(([app, url]) =>
-      `<a class="btn btn--primary" href="${url}" target="_blank" rel="noopener">${cap(app)}</a>`)
-    .join("");
-
-  s.innerHTML = `
-    <div class="wordmark wordmark--lg">
-      <span class="wordmark__vera">VERA</span>
-      <span class="wordmark__divider"></span>
-      <span class="wordmark__pasta">PASTA</span>
-    </div>
-    <p class="finale__grazie">${t("grazie")}</p>
-    <p class="finale__cucina" dir="ltr" lang="it">${t("cucina")}</p>
-    <div class="finale__info">
-      ${socialLink(r.instagram, ICONS.instagram, t("instagram"))}
-      ${socialLink(r.whatsapp ? waUrl(r.whatsapp) : "", ICONS.whatsapp, t("whatsapp"))}
-      ${socialLink(r.mapsUrl, ICONS.pin, t(r.location))}
-      <p class="finale__hours">${t("hoursLabel")}: ${hours}</p>
-    </div>
-    <div class="finale__order">${links}</div>`;
-  return s;
-}
-
-const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const waUrl = (num) => (num.includes("X") ? "" : `https://wa.me/${num.replace(/[^\d]/g, "")}`);
-
-function socialLink(url, icon, label) {
-  if (!url || url.includes("REPLACE_ME")) return "";
-  return `<a href="${url}" target="_blank" rel="noopener">${icon}<span>${label}</span></a>`;
 }
 
 /* ---------- favorites ---------- */
@@ -243,8 +242,9 @@ async function share(dish) {
 
 /* ---------- order bottom sheet ---------- */
 let lastTrigger = null;
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-function openSheet(dish, trigger) {
+export function openSheet(dish, trigger) {
   const sheet = $("#order-sheet");
   lastTrigger = trigger;
   $("#sheet-title").textContent = t(dish.name);

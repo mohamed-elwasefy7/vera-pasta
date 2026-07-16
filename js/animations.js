@@ -1,20 +1,24 @@
-/* VERA PASTA — animations.js
-   Atmosphere crossfade · per-dish enter timelines · breathing/float.
-   One paused timeline per dish, built once at render; IO plays/resets. */
+/* VERA PASTA — animations.js (v2)
+   Atmosphere crossfade · hero choreography · per-section enter
+   timelines (bespoke for dishes, generic data-enter for narrative
+   screens) · ambient loops. One paused timeline per section, built
+   once at render; IO plays/resets with a fast-swipe defer. */
 
 import { $, $$, on, prefersReducedMotion } from "./utils.js";
+import { upgradeFloats } from "./ingredients.js";
 
 const MOODS = ["cream", "sage", "rose", "olive", "terracotta", "espresso"];
 const THEME_COLORS = {
   cream: "#F5EFE0", sage: "#E2E5CC", rose: "#EACBB9",
-  olive: "#5E6C36", terracotta: "#7E2718", espresso: "#241C16",
+  olive: "#525E28", terracotta: "#7E2718", espresso: "#241C16",
 };
 
 let reduced = false;
 let frontSlot = "a";
 let timelines = new Map();     // section -> gsap timeline
-let ambients = new Map();      // section -> [breathe, float] tweens
-let playTimers = new Map();    // section -> deferred play timer
+let ambients = new Map();      // section -> tween[]
+let resets = new Map();        // section -> fn (extra state cleanup)
+let playTimers = new Map();
 let enterIO = null;
 let loadIO = null;
 
@@ -49,23 +53,24 @@ function setMood(mood) {
   frontSlot = frontSlot === "a" ? "b" : "a";
 }
 
-/* ---------- per-dish timelines ---------- */
+/* ---------- section timelines ---------- */
 export function bindDishes() {
-  // clean previous (language re-render)
   timelines.forEach((tl) => tl.kill());
   ambients.forEach((tweens) => tweens.forEach((t2) => t2.kill()));
   playTimers.forEach((t2) => clearTimeout(t2));
-  timelines = new Map(); ambients = new Map(); playTimers = new Map();
+  timelines = new Map(); ambients = new Map(); resets = new Map(); playTimers = new Map();
   enterIO?.disconnect();
   loadIO?.disconnect();
 
   const container = $("#snap");
-  const dishes = $$(".dish", container);
+  const sections = $$("[data-animate]", container);
   if (!window.gsap || reduced) return;
 
-  dishes.forEach((section) => {
+  sections.forEach((section) => {
     section.classList.add("anim-ready");
-    timelines.set(section, buildTimeline(section));
+    timelines.set(section, section.classList.contains("dish")
+      ? buildDishTimeline(section)
+      : buildGenericTimeline(section));
     ambients.set(section, buildAmbient(section));
   });
 
@@ -78,7 +83,7 @@ export function bindDishes() {
         if (!tl) continue;
         if (entry.intersectionRatio >= 0.6) {
           clearTimeout(playTimers.get(section));
-          // small defer so fast flings only animate the landing dish
+          // small defer so fast flings only animate the landing screen
           playTimers.set(section, setTimeout(() => {
             tl.play(0);
             amb.forEach((t2) => t2.resume());
@@ -87,6 +92,7 @@ export function bindDishes() {
         } else if (entry.intersectionRatio <= 0.15) {
           clearTimeout(playTimers.get(section));
           tl.pause(0);
+          resets.get(section)?.();
           amb.forEach((t2) => t2.pause());
           $(".dish__figure", section)?.classList.remove("is-active");
         }
@@ -94,41 +100,98 @@ export function bindDishes() {
     },
     { root: container, threshold: [0.15, 0.6] },
   );
-  dishes.forEach((s) => enterIO.observe(s));
+  sections.forEach((s) => enterIO.observe(s));
 }
 
-function buildTimeline(section) {
+/* bespoke dish choreography */
+function buildDishTimeline(section) {
   const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
   const add = (sel, fromVars, toVars, pos) => {
     const targets = section.querySelectorAll(sel);
     if (targets.length) tl.fromTo(targets, fromVars, toVars, pos);
   };
   add(".dish__kicker", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45 }, 0);
-  add(".dish__name", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, 0.05);
-  add(".dish__subtitle", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, 0.14);
-  add(".dish__desc", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.2);
+  add(".dish__name .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.06);
+  add(".dish__floats .float", { scale: 0.6, opacity: 0 },
+    { scale: 1, opacity: (i, el) => (el.classList.contains("float--far") ? 0.5 : 0.8), duration: 0.5, stagger: 0.08, ease: "back.out(1.6)" }, 0.15);
+  add(".dish__subtitle", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, 0.16);
+  add(".dish__inspiration", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.22);
+  add(".dish__desc", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.28);
   add(".dish__ingredients li", { y: 14, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.4, stagger: 0.045, ease: "power2.out" }, 0.26);
-  add(".dish__meta", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.34);
+    { y: 0, opacity: 1, duration: 0.4, stagger: 0.045, ease: "power2.out" }, 0.32);
+  add(".dish__price .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.55 }, 0.4);
+  add(".dish__price-rule", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.4, ease: "power2.out" }, 0.5);
+  add(".dish__cal, .dish__time", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.48);
   add(".dish__badges .badge", { opacity: 0, y: 8 },
-    { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: "power2.out" }, 0.38);
+    { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: "power2.out" }, 0.52);
   add(".dish__actions > *", { scale: 0.92, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.35, stagger: 0.06, ease: "back.out(1.4)" }, 0.4);
+    { scale: 1, opacity: 1, duration: 0.35, stagger: 0.06, ease: "back.out(1.4)" }, 0.56);
   return tl;
 }
 
+/* generic data-enter choreography for narrative screens
+   types: rise | mask | fade | pop | rule | photo */
+const ENTER_RECIPES = {
+  rise: [{ y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }],
+  mask: [{ yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.85, ease: "power4.out" }],
+  fade: [{ opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }],
+  pop: [{ scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.5)" }],
+  rule: [{ scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }],
+  photo: [{ scale: 1.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: "power2.out" }],
+};
+
+function buildGenericTimeline(section) {
+  const tl = gsap.timeline({ paused: true });
+  const els = $$("[data-enter]", section)
+    .map((el) => ({ el, at: parseFloat(el.dataset.enterAt || "0"), type: el.dataset.enter }))
+    .filter((x) => ENTER_RECIPES[x.type])
+    .sort((a, b) => a.at - b.at);
+  els.forEach(({ el, at, type }) => {
+    const [from, to] = ENTER_RECIPES[type];
+    tl.fromTo(el, { ...from }, { ...to }, at);
+  });
+
+  // philosophy underline: class-triggered CSS dash-draw
+  const emph = $(".philosophy__line--emph", section);
+  if (emph) {
+    tl.call(() => emph.classList.add("is-underlined"), [], 0.95);
+    resets.set(section, () => emph.classList.remove("is-underlined"));
+  }
+  return tl;
+}
+
+/* ambient loops per section — paused off-screen */
 function buildAmbient(section) {
-  const breathe = $(".dish__breathe", section);
-  const figure = $(".dish__figure", section);
   const tweens = [];
+  const breathe = $(".dish__breathe", section);
   if (breathe) {
     tweens.push(gsap.to(breathe, {
-      scale: 1.05, duration: 8, ease: "sine.inOut",
-      yoyo: true, repeat: -1, paused: true,
+      scale: 1.05, duration: 8, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
     }));
-    tweens.push(gsap.to(figure, {
-      y: -6, duration: 6, ease: "sine.inOut",
-      yoyo: true, repeat: -1, paused: true,
+    const figure = $(".dish__figure, .chef__figure", section);
+    if (figure) {
+      tweens.push(gsap.to(figure, {
+        y: -6, duration: 6, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
+      }));
+    }
+  }
+  $$(".float", section).forEach((el, i) => {
+    tweens.push(gsap.to(el, {
+      y: 8 + (i % 3) * 2,
+      rotate: i % 2 ? 4 : -4,
+      duration: 5 + i * 1.1,
+      ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
+    }));
+  });
+  $$(".craft-tile .ingredient-visual", section).forEach((el, i) => {
+    tweens.push(gsap.to(el, {
+      rotate: i % 2 ? 3 : -3, duration: 6 + i, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
+    }));
+  });
+  const closingMark = section.classList.contains("closing") && $(".wordmark--closing", section);
+  if (closingMark) {
+    tweens.push(gsap.to(closingMark, {
+      opacity: 0.82, duration: 7, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
     }));
   }
   return tweens;
@@ -153,7 +216,10 @@ export function bindImages(applyImageFn) {
   loadIO = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) load(entry.target);
+        if (entry.isIntersecting) {
+          load(entry.target);
+          upgradeFloats(entry.target.closest(".screen"));
+        }
       }
     },
     { root: container, rootMargin: "100% 0px" },
@@ -164,33 +230,42 @@ export function bindImages(applyImageFn) {
   offPreload?.();
   offPreload = on("dish:active", ({ index }) => {
     const screens = $$(".screen", container);
-    // current screen too: IO can lag behind instant jumps (deep links)
     [screens[index], screens[index + 1]].forEach((screen) => {
       if (!screen) return;
       $$("img[data-image]", screen).forEach((img) => {
         if (!img.src) load(img);
       });
+      upgradeFloats(screen);
     });
   });
 }
 
-/* ---------- hero entrance ---------- */
+/* ---------- hero entrance v2 ---------- */
 export function heroEntrance() {
   if (!window.gsap || reduced) return;
   const hero = $(".hero");
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
   const add = (sel, fromVars, toVars, pos) => {
-    const el = $(sel, hero);
-    if (el) tl.fromTo(el, fromVars, toVars, pos);
+    const els = $$(sel, hero);
+    if (els.length) tl.fromTo(els, fromVars, toVars, pos);
   };
-  add(".hero__figure", { scale: 1.06, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9 }, 0);
-  add(".wordmark--hero", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, 0.15);
-  add(".hero__tagline", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, 0.3);
-  add(".hero__intro", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.42);
-  add(".hero__cta", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, 0.52);
-  add(".swipe-hint", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.7);
 
-  // hero image ambient breathing
+  const light = $(".hero__light", hero);
+  if (light) {
+    tl.fromTo(light, { xPercent: -30, opacity: 0 },
+      { xPercent: 20, opacity: 1, duration: 1.6, ease: "sine.inOut" }, 0);
+    gsap.to(light, { xPercent: 24, duration: 12, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.6 });
+  }
+  add(".hero__figure", { scale: 1.12, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.1, ease: "power2.out" }, 0.1);
+  add(".wordmark--hero-v2 .reveal__inner", { yPercent: 110 },
+    { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.12 }, 0.35);
+  add(".hero__divider", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.65);
+  add(".hero__tagline .reveal__inner", { yPercent: 110 }, { yPercent: 0, duration: 0.7 }, 0.8);
+  add(".hero__intro", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, 0.95);
+  add(".hero__ctas > *", { y: 10, scale: 0.95, opacity: 0 },
+    { y: 0, scale: 1, opacity: 1, duration: 0.5, stagger: 0.08, ease: "back.out(1.4)" }, 1.1);
+  add(".swipe-hint", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 1.4);
+
   const breathe = $(".hero__breathe", hero);
   if (breathe) {
     gsap.to(breathe, { scale: 1.04, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1 });

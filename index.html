@@ -20,6 +20,7 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/responsive.css">
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -66,23 +67,27 @@
   <!-- Snap scroller -->
   <main id="snap" class="snap-container" tabindex="-1">
 
-    <!-- HERO -->
-    <section class="screen hero" id="top" data-mood="cream" aria-label="VERA PASTA">
+    <!-- HERO v2 -->
+    <section class="screen hero hero--v2" id="top" data-mood="cream" aria-label="VERA PASTA">
       <div class="hero__particles" aria-hidden="true"></div>
+      <div class="hero__light" aria-hidden="true"></div>
       <figure class="hero__figure" aria-hidden="true">
         <div class="hero__breathe">
           <img id="hero-img" class="hero__img" alt="" decoding="async" fetchpriority="high">
         </div>
       </figure>
       <div class="hero__content">
-        <h1 class="wordmark wordmark--hero">
-          <span class="wordmark__vera">VERA</span>
-          <span class="wordmark__divider"></span>
-          <span class="wordmark__pasta">PASTA</span>
+        <h1 class="wordmark--hero-v2" dir="ltr">
+          <span class="reveal"><span class="reveal__inner hero__line hero__line--overlap">VERA</span></span>
+          <span class="hero__divider" aria-hidden="true"></span>
+          <span class="reveal"><span class="reveal__inner hero__line">PASTA</span></span>
         </h1>
-        <p class="hero__tagline" dir="ltr" lang="it">La Vera Cucina Italiana</p>
+        <p class="hero__tagline" dir="ltr" lang="it"><span class="reveal"><span class="reveal__inner">La Vera Cucina Italiana</span></span></p>
         <p class="hero__intro" data-i18n="heroIntro"></p>
-        <button class="btn btn--primary hero__cta" type="button" data-goto="1" data-i18n="exploreMenu"></button>
+        <div class="hero__ctas">
+          <button class="btn btn--primary hero__cta" type="button" data-goto="our-story" data-i18n="heroCtaStory"></button>
+          <button class="hero__cta-alt" type="button" data-goto="menu-intro" data-i18n="heroCtaMenu"></button>
+        </div>
       </div>
       <div class="swipe-hint" aria-hidden="true">
         <span class="swipe-hint__label" data-i18n="swipeUp"></span>
@@ -109,9 +114,15 @@
   <div id="toast" class="toast" role="status"></div>
   <div id="sr-announcer" class="visually-hidden" aria-live="polite"></div>
 
-  <!-- Dish template -->
+  <!-- Dish template v2 — six-layer cinematic structure -->
   <template id="dish-template">
-    <section class="screen dish" aria-label="">
+    <section class="screen dish" data-animate aria-label="">
+      <div class="dish__bg" aria-hidden="true"></div>
+      <div class="dish__texture" aria-hidden="true" dir="ltr"></div>
+      <div class="dish__floats" aria-hidden="true">
+        <div class="dish__floats-far"></div>
+        <div class="dish__floats-near"></div>
+      </div>
       <figure class="dish__figure">
         <div class="dish__breathe">
           <img class="dish__img" alt="" loading="lazy" decoding="async">
@@ -119,20 +130,23 @@
       </figure>
       <div class="dish__content">
         <p class="dish__kicker"></p>
-        <h2 class="dish__name"></h2>
+        <h2 class="dish__name"><span class="reveal"><span class="reveal__inner"></span></span></h2>
         <p class="dish__subtitle"><span dir="ltr"></span></p>
+        <p class="dish__inspiration"></p>
         <p class="dish__desc"></p>
         <ul class="dish__ingredients" role="list"></ul>
-        <div class="dish__meta">
-          <p class="dish__price"><span class="dish__price-num"></span> <span class="dish__price-cur"></span></p>
-          <span class="dish__metaitem dish__cal"></span>
-          <span class="dish__metaitem dish__time"></span>
-        </div>
-        <div class="dish__badges"></div>
-        <div class="dish__actions">
-          <button class="btn btn--primary dish__order" type="button"></button>
-          <button class="iconbtn dish__fav" type="button" aria-pressed="false"></button>
-          <button class="iconbtn dish__share" type="button"></button>
+        <div class="dish__foot">
+          <div class="dish__meta">
+            <p class="dish__price"><span class="reveal"><span class="reveal__inner"><span class="dish__price-num"></span> <span class="dish__price-cur"></span></span></span><span class="dish__price-rule" aria-hidden="true"></span></p>
+            <span class="dish__metaitem dish__cal"></span>
+            <span class="dish__metaitem dish__time"></span>
+          </div>
+          <div class="dish__badges"></div>
+          <div class="dish__actions">
+            <button class="btn btn--primary dish__order" type="button"></button>
+            <button class="iconbtn dish__fav" type="button" aria-pressed="false"></button>
+            <button class="iconbtn dish__share" type="button"></button>
+          </div>
         </div>
       </div>
     </section>

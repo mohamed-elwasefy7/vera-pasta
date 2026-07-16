@@ -20,16 +20,17 @@ function setProgress(fraction) {
   }
 }
 
-export async function run(menuPromise) {
+export async function run(menuPromise, storyPromise = Promise.resolve()) {
   const start = performance.now();
   const reduced = prefersReducedMotion();
   let done = 0;
   const bump = (weight) => { done += weight; setProgress(done); };
 
   const tasks = [
-    document.fonts.ready.then(() => bump(0.35)).catch(() => bump(0.35)),
-    loadHero().then(() => bump(0.4)).catch(() => bump(0.4)),
-    menuPromise.then(() => bump(0.25)).catch(() => bump(0.25)),
+    document.fonts.ready.then(() => bump(0.3)).catch(() => bump(0.3)),
+    loadHero().then(() => bump(0.35)).catch(() => bump(0.35)),
+    menuPromise.then(() => bump(0.2)).catch(() => bump(0.2)),
+    Promise.resolve(storyPromise).then(() => bump(0.15)).catch(() => bump(0.15)),
   ];
 
   const cap = new Promise((r) => setTimeout(r, reduced ? 400 : CAP));

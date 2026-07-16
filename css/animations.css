@@ -24,13 +24,19 @@
 
 /* GSAP-managed entrance targets start hidden (set by JS adding .anim-ready) */
 .anim-ready .dish__kicker,
-.anim-ready .dish__name,
+.anim-ready .dish__name .reveal__inner,
 .anim-ready .dish__subtitle,
+.anim-ready .dish__inspiration,
 .anim-ready .dish__desc,
 .anim-ready .dish__ingredients li,
-.anim-ready .dish__meta,
+.anim-ready .dish__price .reveal__inner,
+.anim-ready .dish__price-rule,
+.anim-ready .dish__cal,
+.anim-ready .dish__time,
 .anim-ready .dish__badges .badge,
-.anim-ready .dish__actions > * {
+.anim-ready .dish__actions > *,
+.anim-ready .dish__floats .float,
+.anim-ready [data-enter] {
   opacity: 0;
 }
 
@@ -51,15 +57,22 @@ html[dir="rtl"] .toast.is-visible { transform: translate(50%, 0); }
   }
   .swipe-hint__chevron, .hero__particles span { animation: none !important; }
   .anim-ready .dish__kicker,
-  .anim-ready .dish__name,
+  .anim-ready .dish__name .reveal__inner,
   .anim-ready .dish__subtitle,
+  .anim-ready .dish__inspiration,
   .anim-ready .dish__desc,
   .anim-ready .dish__ingredients li,
-  .anim-ready .dish__meta,
+  .anim-ready .dish__price .reveal__inner,
+  .anim-ready .dish__price-rule,
+  .anim-ready .dish__cal,
+  .anim-ready .dish__time,
   .anim-ready .dish__badges .badge,
-  .anim-ready .dish__actions > * {
+  .anim-ready .dish__actions > *,
+  .anim-ready .dish__floats .float,
+  .anim-ready [data-enter] {
     opacity: 1 !important;
     transform: none !important;
   }
+  .hero__light, .dish__texture, .section-texture { display: none !important; }
   .snap-container { scroll-behavior: auto; }
 }

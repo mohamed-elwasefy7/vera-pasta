@@ -5,6 +5,7 @@ import {
   $, on, initI18n, getLang, setLang, t, applyStaticI18n, applyImage,
 } from "./utils.js";
 import * as menu from "./menu.js";
+import * as story from "./story.js";
 import * as swipe from "./swipe.js";
 import * as animations from "./animations.js";
 import * as parallax from "./parallax.js";
@@ -14,7 +15,8 @@ async function boot() {
   // 1) kick every fetch off in parallel — nothing gates the hero image
   const stringsPromise = fetch("data/i18n.json").then((r) => r.json());
   const dataPromise = menu.loadData();
-  const loaderDone = loader.run(dataPromise);
+  const storyPromise = story.loadStory(); // tolerant — never throws
+  const loaderDone = loader.run(dataPromise, storyPromise);
 
   let strings = { en: {}, ar: {} };
   try {
@@ -36,6 +38,7 @@ async function boot() {
     await loaderDone;
     return;
   }
+  await storyPromise;
 
   menu.render();
   menu.initSheet();
