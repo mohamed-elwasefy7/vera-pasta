@@ -91,7 +91,7 @@ let pageTween = null;
 function settleTween() {
   container.classList.remove("is-tweening");
   // cooldown swallows trailing trackpad inertia
-  setTimeout(() => { locked = false; }, 150);
+  setTimeout(() => { locked = false; }, 180);
 }
 
 export function goTo(index, instant = false) {
@@ -111,8 +111,8 @@ export function goTo(index, instant = false) {
   const proxy = { v: container.scrollTop };
   pageTween = gsap.to(proxy, {
     v: top,
-    duration: 0.7,
-    ease: "power2.inOut",
+    duration: 0.8,
+    ease: "power3.inOut",
     onUpdate: () => { container.scrollTop = proxy.v; },
     onComplete: settleTween,
     onInterrupt: settleTween,

@@ -24,8 +24,10 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 9vw, 3.4rem);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
 }
+html[lang="ar"] .section-title { letter-spacing: 0; }
 .section-title--poster { font-size: clamp(2.2rem, 10vw, 3.8rem); }
 
 .gold-rule {
@@ -254,7 +256,7 @@ html[dir="rtl"] .dish__price-rule { transform-origin: 100% 50%; }
   box-shadow:
     0 12px 28px -14px rgba(22, 16, 12, .55),
     0 44px 90px -30px rgba(22, 16, 12, .45);
-  filter: saturate(1.03);
+  filter: saturate(1.05) contrast(1.03);
 }
 .chef__content {
   position: relative; z-index: 2;
@@ -269,7 +271,9 @@ html[dir="rtl"] .dish__price-rule { transform-origin: 100% 50%; }
   font-size: clamp(2.4rem, 12vw, 4.5rem);
   font-weight: 700;
   line-height: 1.05;
+  letter-spacing: -0.01em;
 }
+html[lang="ar"] .chef__name { letter-spacing: 0; }
 .chef__quote {
   font-family: var(--font-editorial);
   font-style: italic;

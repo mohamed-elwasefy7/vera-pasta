@@ -191,7 +191,13 @@ function buildDish(dish, tpl, catLabel, favs) {
   const shareBtn = $(".dish__share", node);
   shareBtn.innerHTML = ICONS.share;
   shareBtn.setAttribute("aria-label", t("share"));
-  shareBtn.addEventListener("click", () => share(dish));
+  shareBtn.addEventListener("click", () => {
+    if (window.gsap) {
+      const icon = shareBtn.querySelector("svg");
+      gsap.fromTo(icon, { y: 0 }, { y: -3, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 });
+    }
+    share(dish);
+  });
 
   return node;
 }
@@ -241,8 +247,17 @@ function toggleFavorite(id, btn) {
   storage.set("vera:favorites", [...favs]);
   btn.setAttribute("aria-pressed", String(nowFav));
   btn.setAttribute("aria-label", t(nowFav ? "unfavorite" : "favorite"));
-  if (window.gsap && nowFav) {
-    gsap.fromTo(btn, { scale: 0.8 }, { scale: 1, duration: 0.32, ease: "back.out(2)" });
+  if (!window.gsap) return;
+  gsap.killTweensOf(btn);
+  if (nowFav) {
+    // double heartbeat
+    gsap.timeline()
+      .to(btn, { scale: 1.28, duration: 0.14, ease: "power2.out" })
+      .to(btn, { scale: 0.94, duration: 0.12, ease: "power2.inOut" })
+      .to(btn, { scale: 1.1, duration: 0.12, ease: "power2.inOut" })
+      .to(btn, { scale: 1, duration: 0.18, ease: "power2.out" });
+  } else {
+    gsap.fromTo(btn, { scale: 0.9 }, { scale: 1, duration: 0.25, ease: "power2.out" });
   }
 }
 

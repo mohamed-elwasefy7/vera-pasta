@@ -47,8 +47,8 @@ function setMood(mood) {
     front.style.opacity = 0;
   } else {
     gsap.killTweensOf([back, front]);
-    gsap.to(back, { opacity: 1, duration: 0.9, ease: "power2.inOut" });
-    gsap.to(front, { opacity: 0, duration: 0.9, ease: "power2.inOut" });
+    gsap.to(back, { opacity: 1, duration: 1.15, ease: "sine.inOut" });
+    gsap.to(front, { opacity: 0, duration: 1.15, ease: "sine.inOut" });
   }
   frontSlot = frontSlot === "a" ? "b" : "a";
 }
@@ -66,12 +66,12 @@ export function bindDishes() {
   const sections = $$("[data-animate]", container);
   if (!window.gsap || reduced) return;
 
-  sections.forEach((section) => {
+  sections.forEach((section, i) => {
     section.classList.add("anim-ready");
     timelines.set(section, section.classList.contains("dish")
       ? buildDishTimeline(section)
       : buildGenericTimeline(section));
-    ambients.set(section, buildAmbient(section));
+    ambients.set(section, buildAmbient(section, i));
   });
 
   enterIO = new IntersectionObserver(
@@ -111,21 +111,21 @@ function buildDishTimeline(section) {
     if (targets.length) tl.fromTo(targets, fromVars, toVars, pos);
   };
   add(".dish__kicker", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45 }, 0);
-  add(".dish__name .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.7, ease: "power4.out" }, 0.06);
+  add(".dish__name .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.8, ease: "power4.out" }, 0.06);
   add(".dish__floats .float", { scale: 0.6, opacity: 0 },
-    { scale: 1, opacity: (i, el) => (el.classList.contains("float--far") ? 0.5 : 0.8), duration: 0.5, stagger: 0.08, ease: "back.out(1.6)" }, 0.15);
+    { scale: 1, opacity: (i, el) => (el.classList.contains("float--far") ? 0.5 : 0.8), duration: 0.55, stagger: 0.08, ease: "back.out(1.3)" }, 0.15);
   add(".dish__subtitle", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, 0.16);
   add(".dish__inspiration", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.22);
   add(".dish__desc", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.28);
   add(".dish__ingredients li", { y: 14, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.4, stagger: 0.045, ease: "power2.out" }, 0.32);
+    { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: "power3.out" }, 0.32);
   add(".dish__price .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.55 }, 0.4);
   add(".dish__price-rule", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.4, ease: "power2.out" }, 0.5);
   add(".dish__cal, .dish__time", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.48);
   add(".dish__badges .badge", { opacity: 0, y: 8 },
     { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: "power2.out" }, 0.52);
   add(".dish__actions > *", { scale: 0.92, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.35, stagger: 0.06, ease: "back.out(1.4)" }, 0.56);
+    { scale: 1, opacity: 1, duration: 0.4, stagger: 0.06, ease: "back.out(1.15)" }, 0.56);
   return tl;
 }
 
@@ -133,7 +133,7 @@ function buildDishTimeline(section) {
    types: rise | mask | fade | pop | rule | photo */
 const ENTER_RECIPES = {
   rise: [{ y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }],
-  mask: [{ yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.85, ease: "power4.out" }],
+  mask: [{ yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.9, ease: "power4.out" }],
   fade: [{ opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }],
   pop: [{ scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.5)" }],
   rule: [{ scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }],
@@ -160,26 +160,29 @@ function buildGenericTimeline(section) {
   return tl;
 }
 
-/* ambient loops per section — paused off-screen */
-function buildAmbient(section) {
+/* ambient loops per section — paused off-screen; index desyncs durations so
+   consecutive screens never pulse in mechanical lockstep */
+function buildAmbient(section, index = 0) {
   const tweens = [];
   const breathe = $(".dish__breathe", section);
   if (breathe) {
     tweens.push(gsap.to(breathe, {
-      scale: 1.05, duration: 8, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
+      scale: 1.035, duration: 8 + (index % 5) * 0.35,
+      ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
     }));
     const figure = $(".dish__figure, .chef__figure", section);
     if (figure) {
       tweens.push(gsap.to(figure, {
-        y: -6, duration: 6, ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
+        y: -5, duration: 6 + (index % 4) * 0.45,
+        ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
       }));
     }
   }
   $$(".float", section).forEach((el, i) => {
     tweens.push(gsap.to(el, {
-      y: 8 + (i % 3) * 2,
+      y: 7 + (i % 3) * 2,
       rotate: i % 2 ? 4 : -4,
-      duration: 5 + i * 1.1,
+      duration: 5 + i * 1.1 + (index % 3) * 0.4,
       ease: "sine.inOut", yoyo: true, repeat: -1, paused: true,
     }));
   });
