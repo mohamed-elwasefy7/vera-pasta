@@ -47,14 +47,21 @@ async function boot() {
   swipe.init();
   swipe.initNavAutoHide();
   animations.init();
-  animations.bindDishes();
   animations.bindImages(applyImage);
-  parallax.init();
+  // heavy GSAP work (20 timelines + ~80 scrubs) waits for idle — the loader
+  // covers this window; unbound sections degrade to fully-visible content
+  idle(() => {
+    animations.bindDishes();
+    parallax.init();
+  });
 
   // reveal
   await loaderDone;
   animations.heroEntrance();
 }
+
+const idle = (fn) =>
+  ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 400 }) : setTimeout(fn, 120));
 
 function onLangToggle() {
   const next = getLang() === "ar" ? "en" : "ar";

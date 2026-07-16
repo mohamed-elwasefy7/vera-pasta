@@ -23,6 +23,7 @@ function setProgress(fraction) {
 export async function run(menuPromise, storyPromise = Promise.resolve()) {
   const start = performance.now();
   const reduced = prefersReducedMotion();
+  startLogoFloat();
   let done = 0;
   const bump = (weight) => { done += weight; setProgress(done); };
 
@@ -46,15 +47,33 @@ export async function run(menuPromise, storyPromise = Promise.resolve()) {
 
 async function loadHero() {
   const img = $("#hero-img");
+  // fast path: the static HTML src already painted — just await decode
+  if (img.complete && img.naturalWidth > 0) {
+    try { await img.decode(); } catch { /* best-effort */ }
+    return;
+  }
+  // repair path: static src 404ed (format swapped) — probe for the real file
   const resolved = await resolveImage("hero", "assets/hero/");
   if (!resolved.url) return;
   await applyImage(img, "hero", "assets/hero/", "(min-width:1024px) 30vw, 58vw");
-  try { await img.decode(); } catch { /* decode is best-effort */ }
+  img.style.visibility = "visible";
+  try { await img.decode(); } catch { /* best-effort */ }
+}
+
+let loaderFloat = null;
+
+export function startLogoFloat() {
+  if (prefersReducedMotion() || !window.gsap) return;
+  const mark = $("#loader .wordmark");
+  if (mark) {
+    loaderFloat = gsap.to(mark, { y: -4, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
+  }
 }
 
 function dissolve(reduced) {
   const loader = $("#loader");
   loader.classList.add("is-done");
+  loaderFloat?.kill();
   return new Promise((resolve) => {
     if (reduced || !window.gsap) {
       loader.style.display = "none";

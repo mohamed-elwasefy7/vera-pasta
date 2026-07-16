@@ -30,6 +30,7 @@ const NARRATIVE_LAYERS = [
   [".section-texture", 4, 1.0],
   [".narrative__content", 2.5, 0.9],
   [".philosophy__stack", 3, 0.9],
+  [".cucina__stack", 3, 0.9],
   [".craft__grid", 2.5, 1.0],
   [".menu-intro__floats", 8, 0.8],
   [".chef__figure", 6, 0.6],

@@ -47,7 +47,8 @@
   }
   .hero__line--overlap { margin-block-start: 0; text-shadow: none; }
   .hero__divider { inline-size: 1px; block-size: .8em; }
-  .hero--v2 .hero__figure { inline-size: min(26vw, 36dvh); }
+  .hero--v2 { --hero-fig: min(26vw, 36dvh); }
+  .hero--v2 .hero__content { padding-block-start: calc(var(--hero-fig) * .6); }
   .hero__ctas { grid-auto-flow: column; gap: var(--s4); }
 
   /* confine dish floats to the figure half so they never sit over text */
@@ -109,6 +110,7 @@
   .dish__inspiration { display: none; }
   .dish__floats, .dish__texture, .section-texture { display: none; }
   .hero__figure { display: none; }
+  .hero--v2 .hero__content { padding-block-start: 0; }
   .hero__line--overlap { margin-block-start: 0; }
   .swipe-hint { display: none; }
   .rail { display: none; }

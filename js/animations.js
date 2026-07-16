@@ -256,7 +256,9 @@ export function heroEntrance() {
       { xPercent: 20, opacity: 1, duration: 1.6, ease: "sine.inOut" }, 0);
     gsap.to(light, { xPercent: 24, duration: 12, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.6 });
   }
-  add(".hero__figure", { scale: 1.12, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.1, ease: "power2.out" }, 0.1);
+  // scale-only: the loader's dissolve provides the fade, and keeping the image
+  // painted from the start lets it register as LCP at first paint
+  add(".hero__figure", { scale: 1.12 }, { scale: 1, duration: 1.1, ease: "power2.out" }, 0.1);
   add(".wordmark--hero-v2 .reveal__inner", { yPercent: 110 },
     { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.12 }, 0.35);
   add(".hero__divider", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.65);
@@ -269,5 +271,10 @@ export function heroEntrance() {
   const breathe = $(".hero__breathe", hero);
   if (breathe) {
     gsap.to(breathe, { scale: 1.04, duration: 9, ease: "sine.inOut", yoyo: true, repeat: -1 });
+  }
+  // floating logo — starts once the entrance settles
+  const mark = $(".wordmark--hero-v2", hero);
+  if (mark) {
+    gsap.to(mark, { y: -5, duration: 7, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.6 });
   }
 }

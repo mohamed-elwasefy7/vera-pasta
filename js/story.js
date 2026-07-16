@@ -66,6 +66,20 @@ export function buildStory() {
   return s;
 }
 
+/* ---------- 1b. La Vera Cucina interstitial ---------- */
+export function buildCucina() {
+  if (!story.cucina) return null;
+  const s = section("la-vera-cucina", "terracotta", "screenCucina", "cucina");
+  s.innerHTML = `
+    ${textureHTML("Vera")}
+    <div class="cucina__stack">
+      <p class="cucina__line" dir="ltr" lang="it"><span class="reveal"><span class="reveal__inner" data-enter="mask" data-enter-at="0.05">${t(story.cucina.line)}</span></span></p>
+      ${ruleHTML("0.5")}
+      <p class="cucina__sub" data-enter="rise" data-enter-at="0.62">${t(story.cucina.sub)}</p>
+    </div>`;
+  return s;
+}
+
 /* ---------- 2. Philosophy ---------- */
 export function buildPhilosophy() {
   const s = section("philosophy", "espresso", "screenPhilosophy", "philosophy");
@@ -288,6 +302,11 @@ export function buildClosing(restaurant) {
     usable(url) ? `<a href="${url}" target="_blank" rel="noopener">${icon}<span>${label}</span></a>` : "";
   const wa = restaurant.whatsapp && !restaurant.whatsapp.includes("X")
     ? `https://wa.me/${restaurant.whatsapp.replace(/[^\d]/g, "")}` : "";
+  const orderBtns = Object.entries(restaurant.orderLinks || {})
+    .filter(([, url]) => usable(url))
+    .map(([app, url]) =>
+      `<a class="btn btn--primary" href="${url}" target="_blank" rel="noopener">${cap(app)}</a>`)
+    .join("");
   s.innerHTML = `
     <div class="closing__particles" aria-hidden="true"></div>
     <div class="closing__stack">
@@ -305,7 +324,8 @@ export function buildClosing(restaurant) {
         ${social(restaurant.mapsUrl, ICONS.pin, t(restaurant.location))}
         <p class="finale__hours">${t("hoursLabel")}: ${hours}</p>
       </div>
-      ${ruleHTML("0.7")}
+      ${orderBtns ? `<div class="closing__order" data-enter="rise" data-enter-at="0.65">${orderBtns}</div>` : ""}
+      ${ruleHTML("0.75")}
     </div>`;
   return s;
 }

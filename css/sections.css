@@ -7,6 +7,10 @@
 /* ---------- primitives ---------- */
 .reveal { display: block; overflow: hidden; }
 .reveal__inner { display: block; }
+/* fixed-height mask boxes: font-metric differences during webfont swap get
+   absorbed inside the overflow instead of shifting the whole hero layout */
+.wordmark--hero-v2 .reveal { block-size: 1em; }
+.hero__tagline .reveal { block-size: 1.65em; }
 
 .section-kicker {
   font-size: .72rem;
@@ -129,6 +133,29 @@ html[dir="rtl"] .section-texture { transform: translateX(50%); }
   color: var(--ink-faint);
 }
 
+/* ---------- La Vera Cucina interstitial ---------- */
+.cucina__stack {
+  position: relative; z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: var(--s3);
+  text-align: center;
+  max-inline-size: 30rem;
+}
+.cucina__line {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(2.6rem, 12vw, 5rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.cucina__sub {
+  font-size: .98rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  max-inline-size: 24rem;
+}
+
 /* ---------- craft ---------- */
 .craft { gap: var(--s5); }
 .craft__grid {
@@ -224,7 +251,10 @@ html[dir="rtl"] .dish__price-rule { transform-origin: 100% 50%; }
   inline-size: 100%; block-size: 100%;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 36px 70px -24px rgba(22, 16, 12, .5);
+  box-shadow:
+    0 12px 28px -14px rgba(22, 16, 12, .55),
+    0 44px 90px -30px rgba(22, 16, 12, .45);
+  filter: saturate(1.03);
 }
 .chef__content {
   position: relative; z-index: 2;
@@ -292,6 +322,11 @@ html[dir="rtl"] .dish__price-rule { transform-origin: 100% 50%; }
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: 0 24px 50px -24px rgba(0, 0, 0, .5);
+  transition: transform .4s var(--ease-out);
+}
+@media (hover: hover) {
+  .gallery-card:hover .gallery-card__frame { transform: scale(1.02); }
 }
 .gallery-card--tall .gallery-card__frame { aspect-ratio: 3 / 4; max-block-size: 52dvh; }
 .gallery-card--square .gallery-card__frame { aspect-ratio: 1; max-block-size: 44dvh; }
@@ -370,22 +405,45 @@ html[dir="rtl"] .order-card__arrow { transform: scaleX(-1); }
   color: var(--ink);
 }
 .closing__sub { font-size: .9rem; color: var(--ink-soft); }
+.closing__order { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s2); margin-block-start: var(--s2); }
 
 /* ---------- hero v2 ---------- */
-.hero--v2 { gap: var(--s2); }
+.hero--v2 {
+  --hero-fig: min(66vw, 38dvh);
+  gap: var(--s2);
+  /* top-anchored: late height changes (i18n/font swaps in hidden children)
+     grow downward instead of re-centering — zero layout shift */
+  justify-content: flex-start;
+}
+
+/* pre-entrance hiding (only when JS + motion): text swaps during boot happen
+   invisibly, so language resolution can never shift painted content */
+html.js-motion .hero__intro,
+html.js-motion .hero__ctas > *,
+html.js-motion .swipe-hint { opacity: 0; }
+html.js-motion .wordmark--hero-v2 .reveal__inner,
+html.js-motion .hero__tagline .reveal__inner { transform: translateY(110%); }
+html.js-motion .hero__divider { transform: scaleX(0); }
 .hero__light {
   position: absolute;
   inset: -20%;
   background: radial-gradient(40% 30% at 50% 30%, rgba(232, 201, 122, .18), transparent 70%);
   pointer-events: none;
   z-index: 0;
+  opacity: 0;   /* revealed by the entrance sweep — never painted before GSAP owns it */
 }
+/* figure is absolute: content height changes (i18n, fonts) can never move it */
 .hero--v2 .hero__figure {
-  position: relative; z-index: 1;
-  inline-size: min(66vw, 38dvh);
-  margin-block-start: calc(var(--nav-h) * .5);
+  position: absolute; z-index: 1;
+  inset-block-start: calc(var(--nav-h) * 1.05);
+  inset-inline: 0;
+  margin-inline: auto;      /* centered without transform — GSAP owns transforms */
+  inline-size: var(--hero-fig);
 }
-.hero--v2 .hero__content { position: relative; z-index: 2; }
+.hero--v2 .hero__content {
+  position: relative; z-index: 2;
+  padding-block-start: calc(var(--nav-h) * 1.05 + var(--hero-fig) * .78);
+}
 .wordmark--hero-v2 {
   display: grid;
   justify-items: center;

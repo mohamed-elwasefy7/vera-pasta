@@ -1,8 +1,14 @@
 {
   "version": 1,
   "story": {
-    "kicker": { "en": "Our Story", "ar": "قصتنا" },
-    "title": { "en": "Born of a simple conviction", "ar": "وُلدت من قناعة بسيطة" },
+    "kicker": {
+      "en": "Our Story",
+      "ar": "قصتنا"
+    },
+    "title": {
+      "en": "Born of a simple conviction",
+      "ar": "وُلدت من قناعة بسيطة"
+    },
     "paragraphs": [
       {
         "en": "VERA began with one question: what if pasta in Riyadh tasted the way it does in an Italian home kitchen?",
@@ -20,65 +26,147 @@
   },
   "philosophy": {
     "lines": [
-      { "en": "Real pasta", "ar": "الباستا الحقيقية" },
-      { "en": "isn't made fast.", "ar": "لا تُصنع بسرعة." },
-      { "en": "It's made right.", "ar": "تُصنع بإتقان." }
+      {
+        "en": "Real pasta",
+        "ar": "الباستا الحقيقية"
+      },
+      {
+        "en": "isn't made fast.",
+        "ar": "لا تُصنع بسرعة."
+      },
+      {
+        "en": "It's made right.",
+        "ar": "تُصنع بإتقان."
+      }
     ],
     "emphasis": 2,
-    "signature": { "en": "— the VERA kitchen", "ar": "— مطبخ فيرا" }
+    "signature": {
+      "en": "— the VERA kitchen",
+      "ar": "— مطبخ فيرا"
+    }
   },
   "craft": {
-    "kicker": { "en": "Crafted by Hand", "ar": "مصنوعة باليد" },
-    "title": { "en": "Four things we never compromise on", "ar": "أربعة أشياء لا نساوم عليها" },
+    "kicker": {
+      "en": "Crafted by Hand",
+      "ar": "مصنوعة باليد"
+    },
+    "title": {
+      "en": "Four things we never compromise on",
+      "ar": "أربعة أشياء لا نساوم عليها"
+    },
     "items": [
       {
         "key": "pasta-nest",
-        "name": { "en": "Fresh pasta", "ar": "باستا طازجة" },
-        "note": { "en": "Rolled daily, cut to order.", "ar": "تُفرد يومياً وتُقطع عند الطلب." }
+        "name": {
+          "en": "Fresh pasta",
+          "ar": "باستا طازجة"
+        },
+        "note": {
+          "en": "Rolled daily, cut to order.",
+          "ar": "تُفرد يومياً وتُقطع عند الطلب."
+        }
       },
       {
         "key": "parmesan",
-        "name": { "en": "Parmesan", "ar": "بارميزان" },
-        "note": { "en": "Aged, sharp, grated at the last minute.", "ar": "معتّق وحاد، يُبشر في اللحظة الأخيرة." }
+        "name": {
+          "en": "Parmesan",
+          "ar": "بارميزان"
+        },
+        "note": {
+          "en": "Aged, sharp, grated at the last minute.",
+          "ar": "معتّق وحاد، يُبشر في اللحظة الأخيرة."
+        }
       },
       {
         "key": "tomato",
-        "name": { "en": "Tomatoes", "ar": "طماطم" },
-        "note": { "en": "Ripe, simmered slowly to sweetness.", "ar": "ناضجة، تُطهى ببطء حتى تحلو." }
+        "name": {
+          "en": "Tomatoes",
+          "ar": "طماطم"
+        },
+        "note": {
+          "en": "Ripe, simmered slowly to sweetness.",
+          "ar": "ناضجة، تُطهى ببطء حتى تحلو."
+        }
       },
       {
         "key": "olive-branch",
-        "name": { "en": "Olive oil", "ar": "زيت زيتون" },
-        "note": { "en": "Cold-pressed. The first and last touch of every plate.", "ar": "معصور على البارد. أول لمسة في الطبق وآخرها." }
+        "name": {
+          "en": "Olive oil",
+          "ar": "زيت زيتون"
+        },
+        "note": {
+          "en": "Cold-pressed. The first and last touch of every plate.",
+          "ar": "معصور على البارد. أول لمسة في الطبق وآخرها."
+        }
       }
     ]
   },
   "menuIntro": {
-    "kicker": { "en": "The Menu", "ar": "المنيو" },
-    "title": { "en": "A curated collection", "ar": "تشكيلة منتقاة" },
+    "kicker": {
+      "en": "The Menu",
+      "ar": "المنيو"
+    },
+    "title": {
+      "en": "A curated collection",
+      "ar": "تشكيلة منتقاة"
+    },
     "body": {
       "en": "Nine plates. Each with a reason to exist. Swipe through them slowly — they were not cooked in a hurry.",
       "ar": "تسعة أطباق، لكلٍّ منها سببُ وجود. تصفّحها على مهل — فهي لم تُطهَ على عجل."
     }
   },
   "chef": {
-    "kicker": { "en": "Chef's Signature", "ar": "توقيع الشيف" },
+    "kicker": {
+      "en": "Chef's Signature",
+      "ar": "توقيع الشيف"
+    },
     "quote": {
       "en": "If you order one plate tonight, make it this one.",
       "ar": "لو ستطلب طبقاً واحداً الليلة، فليكن هذا."
     }
   },
   "gallery": {
-    "kicker": { "en": "The Gallery", "ar": "المعرض" },
-    "title": { "en": "From our kitchen", "ar": "من مطبخنا" }
+    "kicker": {
+      "en": "The Gallery",
+      "ar": "المعرض"
+    },
+    "title": {
+      "en": "From our kitchen",
+      "ar": "من مطبخنا"
+    }
   },
   "order": {
-    "kicker": { "en": "Order", "ar": "اطلب" },
-    "title": { "en": "Your table, wherever you are", "ar": "طاولتك أينما كنت" },
-    "body": { "en": "Order in minutes — or come say ciao.", "ar": "اطلب في دقائق — أو تعال وقل تشاو." }
+    "kicker": {
+      "en": "Order",
+      "ar": "اطلب"
+    },
+    "title": {
+      "en": "Your table, wherever you are",
+      "ar": "طاولتك أينما كنت"
+    },
+    "body": {
+      "en": "Order in minutes — or come say ciao.",
+      "ar": "اطلب في دقائق — أو تعال وقل تشاو."
+    }
   },
   "closing": {
-    "thanks": { "en": "Grazie mille", "ar": "Grazie mille" },
-    "sub": { "en": "Thank you for taking it slow with us.", "ar": "شكراً لأنك تمهّلت معنا." }
+    "thanks": {
+      "en": "Grazie mille",
+      "ar": "Grazie mille"
+    },
+    "sub": {
+      "en": "Thank you for taking it slow with us.",
+      "ar": "شكراً لأنك تمهّلت معنا."
+    }
+  },
+  "cucina": {
+    "line": {
+      "en": "La Vera Cucina",
+      "ar": "La Vera Cucina"
+    },
+    "sub": {
+      "en": "Not a slogan — a standard. The true Italian kitchen: few ingredients, endless patience, honest heat.",
+      "ar": "ليست شعاراً — بل معيار. المطبخ الإيطالي الحقيقي: مكونات قليلة، صبر بلا حدود، ونار صادقة."
+    }
   }
 }

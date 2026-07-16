@@ -291,7 +291,11 @@ html[dir="rtl"] .dish__figure { transform: translateX(50%); }
   inline-size: 100%; block-size: 100%;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 36px 70px -24px rgba(22, 16, 12, .45);
+  /* two-layer shadow: tight contact + soft ambient falloff */
+  box-shadow:
+    0 12px 28px -14px rgba(22, 16, 12, .5),
+    0 44px 90px -30px rgba(22, 16, 12, .4);
+  filter: saturate(1.03);
   background: var(--surface);
 }
 .dish[data-presentation="card"] .dish__img { border-radius: var(--radius); }
@@ -398,8 +402,12 @@ body[data-mood="olive"] .btn--primary {
   color: var(--nero);
   box-shadow: 0 14px 30px -12px rgba(232, 201, 122, .4);
 }
-.btn--primary:hover { transform: scale(1.04); }
-.btn--primary:active { transform: scale(.97); }
+.btn--primary:hover { transform: scale(1.04) translateY(-1px); }
+.btn--primary:active {
+  transform: scale(.96);
+  box-shadow: 0 6px 16px -8px rgba(139, 44, 31, .5);
+  transition-duration: .08s;
+}
 
 .iconbtn {
   inline-size: 48px; block-size: 48px;
@@ -409,8 +417,8 @@ body[data-mood="olive"] .btn--primary {
   color: var(--ink);
   transition: border-color .3s, background .3s, transform .2s var(--ease-out);
 }
-.iconbtn:hover { border-color: var(--accent); background: var(--surface); }
-.iconbtn:active { transform: scale(.92); }
+.iconbtn:hover { border-color: var(--accent); background: var(--surface); transform: scale(1.05); }
+.iconbtn:active { transform: scale(.9); transition-duration: .08s; }
 .iconbtn svg { inline-size: 20px; block-size: 20px; }
 .dish__fav[aria-pressed="true"] { color: var(--pomodoro); border-color: var(--pomodoro); }
 body[data-mood="olive"] .dish__fav[aria-pressed="true"],
@@ -446,7 +454,9 @@ body[data-mood="espresso"] .dish__fav[aria-pressed="true"] { color: var(--oro); 
   border-radius: var(--radius);
   background: var(--surface);
   text-align: center;
+  transition: transform .3s var(--ease-out), border-color .3s;
 }
+.drink-card:hover { transform: translateY(-3px); border-color: var(--oro); }
 .drink-card img {
   inline-size: 5rem; block-size: 5rem;
   object-fit: cover;

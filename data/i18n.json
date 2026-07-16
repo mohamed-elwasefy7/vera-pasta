@@ -48,7 +48,8 @@
     "screenClosing": "Thank you",
     "roleDelivery": "Delivery",
     "roleChat": "Chat with us",
-    "roleFollow": "Follow the kitchen"
+    "roleFollow": "Follow the kitchen",
+    "screenCucina": "La Vera Cucina"
   },
   "ar": {
     "heroIntro": "صوصات على مهل. باستا طازجة. منيو صغير نفخر به بلا حدود — يُصنع في الرياض، على الطريقة الإيطالية.",
@@ -99,6 +100,7 @@
     "screenClosing": "شكراً",
     "roleDelivery": "توصيل",
     "roleChat": "راسلنا",
-    "roleFollow": "تابع المطبخ"
+    "roleFollow": "تابع المطبخ",
+    "screenCucina": "La Vera Cucina"
   }
 }

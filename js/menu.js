@@ -57,6 +57,7 @@ export function render() {
 
   if (st) {
     append(story.buildStory());
+    append(story.buildCucina());
     append(story.buildPhilosophy());
     append(story.buildCraft());
     append(story.buildMenuIntro());
