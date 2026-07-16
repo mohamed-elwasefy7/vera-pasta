@@ -266,7 +266,8 @@ export function heroEntrance() {
   add(".hero__intro", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, 0.95);
   add(".hero__ctas > *", { y: 10, scale: 0.95, opacity: 0 },
     { y: 0, scale: 1, opacity: 1, duration: 0.5, stagger: 0.08, ease: "back.out(1.4)" }, 1.1);
-  add(".swipe-hint", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 1.4);
+  add(".hero__cats", { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 1.25);
+  add(".swipe-hint", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 1.45);
 
   const breathe = $(".hero__breathe", hero);
   if (breathe) {

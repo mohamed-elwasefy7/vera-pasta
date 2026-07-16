@@ -1071,6 +1071,7 @@ html[dir="rtl"] .order-card__arrow { transform: scaleX(-1); }
 }
 html.js-motion .hero__intro,
 html.js-motion .hero__ctas > *,
+html.js-motion .hero__cats,
 html.js-motion .swipe-hint { opacity: 0; }
 html.js-motion .wordmark--hero-v2 .reveal__inner,
 html.js-motion .hero__tagline .reveal__inner { transform: translateY(110%); }
@@ -1133,6 +1134,27 @@ html.js-motion .hero__divider { transform: scaleX(0); }
   transition: color .3s, border-color .3s;
 }
 .hero__cta-alt:hover { color: var(--accent); border-color: var(--accent); }
+.hero__cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s1);
+  margin-block-start: var(--s3);
+  max-inline-size: 22rem;
+}
+.hero__cat {
+  min-block-size: 40px;
+  padding-inline: var(--s3);
+  border: 1px solid color-mix(in srgb, var(--oro) 55%, transparent);
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: var(--ink-soft);
+  transition: color .25s, border-color .25s, background .25s, transform .2s var(--ease-out);
+}
+.hero__cat:hover { color: var(--ink); border-color: var(--oro); background: var(--surface); }
+.hero__cat:active { transform: scale(.95); transition-duration: .08s; }
 /* == responsive.css == */
 @media (max-width: 360px) {
   .dish__figure { inline-size: min(74vw, 36dvh); }

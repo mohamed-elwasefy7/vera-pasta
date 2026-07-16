@@ -55,13 +55,10 @@ export function render() {
   const st = story.getStory();
   const append = (node) => { if (node) main.append(node); };
 
-  if (st) {
-    append(story.buildStory());
-    append(story.buildCucina());
-    append(story.buildPhilosophy());
-    append(story.buildCraft());
-    append(story.buildMenuIntro());
-  }
+  // Food-first flow (v2.2): the narrative intro screens are intentionally not
+  // composed — first dish is one swipe from the hero. To restore them, append
+  // story.buildStory/buildCucina/buildPhilosophy/buildCraft/buildMenuIntro here.
+  renderHeroCategories();
 
   const catLabel = (id) => {
     const cat = data.categories?.find((c) => c.id === id);
@@ -85,6 +82,36 @@ export function render() {
   }
 
   emit("menu:rendered", { dishes: data.dishes });
+}
+
+/* ---------- hero: quick category chips (rebuilt every render → bilingual) ---------- */
+function renderHeroCategories() {
+  const wrap = $(".hero__cats");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const firstOf = (catId) => data.dishes.find((d) => d.category === catId)?.id;
+
+  (data.categories || []).forEach((cat) => {
+    const target = firstOf(cat.id);
+    if (!target) return;
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "hero__cat";
+    chip.dataset.goto = target;
+    chip.textContent = t(cat.label);
+    wrap.append(chip);
+  });
+  if (data.drinks.length) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "hero__cat";
+    chip.dataset.goto = "drinks";
+    chip.textContent = t("drinksTitle");
+    wrap.append(chip);
+  }
+  // primary CTA jumps straight to the first dish
+  const cta = $(".hero__cta");
+  if (cta && data.dishes[0]) cta.dataset.goto = data.dishes[0].id;
 }
 
 /* ---------- dish v2 ---------- */
