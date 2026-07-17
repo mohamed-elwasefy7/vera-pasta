@@ -122,6 +122,12 @@ function buildDish(dish, tpl, catLabel, favs) {
   node.dataset.presentation = dish.presentation || "plate";
   node.setAttribute("aria-label", t(dish.name));
 
+  // per-dish adaptive mobile composition (data-driven; desktop CSS ignores it)
+  const m = dish.mobile || {};
+  node.dataset.mImg = m.imagePosition === "bottom" ? "bottom" : "top";
+  node.dataset.mAlign = m.textAlign === "center" ? "center" : "start";
+  node.dataset.mSize = m.imageScale === "large" ? "large" : "regular";
+
   // L2 ghost texture word = first word of the Italian subtitle
   $(".dish__texture", node).textContent = (dish.subtitle || "VERA").split(" ")[0];
 
@@ -131,6 +137,7 @@ function buildDish(dish, tpl, catLabel, favs) {
   const img = $(".dish__img", node);
   img.alt = `${t(dish.name)} — ${dish.subtitle || ""}`;
   img.dataset.image = dish.image;
+  if (m.objectPosition) img.style.setProperty("--obj-pos", m.objectPosition);
 
   $(".dish__kicker", node).textContent = catLabel(dish.category);
   $(".dish__name .reveal__inner", node).textContent = t(dish.name);

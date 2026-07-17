@@ -359,6 +359,7 @@ html[dir="rtl"] #loader-line { transform-origin: 100% 50%; }
 .dish__img {
   inline-size: 100%; block-size: 100%;
   object-fit: cover;
+  object-position: var(--obj-pos, 50% 50%);   
   border-radius: 50%;
   box-shadow:
     0 12px 28px -14px rgba(22, 16, 12, .5),
@@ -1188,6 +1189,28 @@ html.js-motion .hero__divider { transform: scaleX(0); }
 .hero__cat:hover { color: var(--ink); border-color: var(--oro); background: var(--surface); }
 .hero__cat:active { transform: scale(.95); transition-duration: .08s; }
 /* == responsive.css == */
+@media (max-width: 1023.98px) {
+  .dish[data-m-img="bottom"] .dish__figure { order: 2; }
+  .dish[data-m-img="bottom"] .dish__content { order: 1; align-content: start; }
+  .dish[data-m-img="bottom"] .dish__floats {
+    inset-block-start: auto;
+    inset-block-end: 0;
+    block-size: 46dvh;
+  }
+  .dish[data-m-img="bottom"] .dish__texture {
+    inset-block-start: auto;
+    inset-block-end: 6%;
+  }
+  .dish[data-m-align="center"] .dish__content {
+    text-align: center;
+    justify-items: center;
+  }
+  .dish[data-m-align="center"] .dish__ingredients,
+  .dish[data-m-align="center"] .dish__badges,
+  .dish[data-m-align="center"] .dish__actions,
+  .dish[data-m-align="center"] .dish__meta { justify-content: center; }
+  .dish[data-m-size="large"] .dish__figure { inline-size: min(80vw, 42dvh); }
+}
 @media (max-width: 360px) {
   .dish__figure { inline-size: min(64vw, 32dvh); }
   .dish__name { font-size: 1.7rem; }

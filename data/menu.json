@@ -113,7 +113,12 @@
         "parmesan",
         "wheat",
         "basil"
-      ]
+      ],
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "start",
+        "imageScale": "regular"
+      }
     },
     {
       "id": "pomodoro-parmesan",
@@ -169,6 +174,11 @@
       "inspiration": {
         "en": "The way Naples taught the world: tomato, patience, nothing else.",
         "ar": "كما علّمت نابولي العالم: طماطم وصبر، ولا شيء غيرهما."
+      },
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "center",
+        "imageScale": "regular"
       }
     },
     {
@@ -229,7 +239,12 @@
         "pine-nut",
         "parmesan",
         "olive-branch"
-      ]
+      ],
+      "mobile": {
+        "imagePosition": "bottom",
+        "textAlign": "start",
+        "imageScale": "regular"
+      }
     },
     {
       "id": "rose-parmigiano",
@@ -283,6 +298,11 @@
       "inspiration": {
         "en": "A northern indulgence — Emilia's cream meets the southern sun.",
         "ar": "ترفٌ من الشمال — كريمة إيميليا تلتقي شمس الجنوب."
+      },
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "start",
+        "imageScale": "regular"
       }
     },
     {
@@ -337,6 +357,11 @@
       "inspiration": {
         "en": "Bologna's Sunday ritual, layer by patient layer.",
         "ar": "طقس الأحد في بولونيا، طبقة صبورة فوق أخرى."
+      },
+      "mobile": {
+        "imagePosition": "bottom",
+        "textAlign": "center",
+        "imageScale": "regular"
       }
     },
     {
@@ -398,7 +423,12 @@
         "chili",
         "basil"
       ],
-      "signature": true
+      "signature": true,
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "start",
+        "imageScale": "large"
+      }
     },
     {
       "id": "greenova",
@@ -452,6 +482,11 @@
       "inspiration": {
         "en": "A garden course, the Italian pause between plates.",
         "ar": "طبق من البستان — الاستراحة الإيطالية بين الأطباق."
+      },
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "center",
+        "imageScale": "regular"
       }
     },
     {
@@ -506,6 +541,11 @@
       "inspiration": {
         "en": "The Mediterranean, dressed in lemon.",
         "ar": "البحر المتوسط، بصوص الليمون."
+      },
+      "mobile": {
+        "imagePosition": "bottom",
+        "textAlign": "start",
+        "imageScale": "regular"
       }
     },
     {
@@ -560,6 +600,12 @@
       "inspiration": {
         "en": "La tavola — because in Italy, food is never eaten alone.",
         "ar": "لا تافولا — لأن الطعام في إيطاليا لا يُؤكل وحيداً."
+      },
+      "mobile": {
+        "imagePosition": "top",
+        "textAlign": "center",
+        "imageScale": "large",
+        "objectPosition": "50% 42%"
       }
     }
   ],

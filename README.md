@@ -70,6 +70,7 @@ python tools/optimize-images.py
 | `available` | `false` = يختفي من المنيو فوراً |
 | `chefChoice` / `vegetarian` / `spicy` | البادجات |
 | `orderLinks` | روابط جاهز/هنقرستيشن/كيتا للطبق (تتجاوز روابط المطعم العامة) |
+| `mobile` | تكوين الموبايل الخاص بالطبق (اختياري): `imagePosition` top/bottom (نص تحت/فوق الصورة) · `textAlign` start/center · `imageScale` regular/large · `objectPosition` مثل "50% 42%" لتوجيه القص داخل الماسك. غيابه = الافتراضي. الديسكتوب لا يتأثر |
 
 ### بيانات المطعم
 

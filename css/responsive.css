@@ -3,6 +3,39 @@
    Base = 360–430px portrait phones. Scale up + landscape.
    ============================================================ */
 
+/* ============================================================
+   Adaptive per-dish mobile composition (menu.json "mobile" block
+   → data-m-* attributes). Mobile/tablet only — desktop never
+   reads these.
+   ============================================================ */
+@media (max-width: 1023.98px) {
+  /* image below, text above */
+  .dish[data-m-img="bottom"] .dish__figure { order: 2; }
+  .dish[data-m-img="bottom"] .dish__content { order: 1; align-content: start; }
+  .dish[data-m-img="bottom"] .dish__floats {
+    inset-block-start: auto;
+    inset-block-end: 0;
+    block-size: 46dvh;
+  }
+  .dish[data-m-img="bottom"] .dish__texture {
+    inset-block-start: auto;
+    inset-block-end: 6%;
+  }
+
+  /* centered poster composition */
+  .dish[data-m-align="center"] .dish__content {
+    text-align: center;
+    justify-items: center;
+  }
+  .dish[data-m-align="center"] .dish__ingredients,
+  .dish[data-m-align="center"] .dish__badges,
+  .dish[data-m-align="center"] .dish__actions,
+  .dish[data-m-align="center"] .dish__meta { justify-content: center; }
+
+  /* oversized signature photography */
+  .dish[data-m-size="large"] .dish__figure { inline-size: min(80vw, 42dvh); }
+}
+
 /* Small phones (<= 360px) — tighten */
 @media (max-width: 360px) {
   .dish__figure { inline-size: min(64vw, 32dvh); }
