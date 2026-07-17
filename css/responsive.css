@@ -34,6 +34,9 @@
 
   /* oversized signature photography */
   .dish[data-m-size="large"] .dish__figure { inline-size: min(80vw, 42dvh); }
+
+  /* thumb-friendly primary action */
+  .dish__order, .chef__order { min-block-size: 52px; }
 }
 
 /* Small phones (<= 360px) — tighten */

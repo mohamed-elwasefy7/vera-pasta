@@ -285,7 +285,8 @@ html[dir="rtl"] #loader-line { transform-origin: 100% 50%; }
   justify-content: flex-start;
   padding-block-start: calc(var(--nav-h) + env(safe-area-inset-top) + var(--s2));
   padding-block-end: calc(var(--s4) + env(safe-area-inset-bottom));
-  padding-inline: var(--s5);
+  /* safe areas: notch/Dynamic Island landscape edges + rounded corners */
+  padding-inline: max(var(--s5), env(safe-area-inset-left), env(safe-area-inset-right));
   gap: var(--s3);
 }
 .dish__figure {

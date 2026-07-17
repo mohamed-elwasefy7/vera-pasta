@@ -163,8 +163,16 @@ export async function resolveSmallVariant(resolved) {
   }
 }
 
-/* set src (+srcset when available) on an <img> from a basename */
+/* set src (+srcset when available) on an <img> from a basename.
+   Art direction: on mobile, a "{basename}-m.*" file in the same folder wins —
+   drop a dedicated mobile crop in and it is picked up with zero code changes. */
+const MOBILE_MQ = window.matchMedia("(max-width: 1023.98px)");
+
 export async function applyImage(img, basename, dir, sizes = "(min-width:1024px) 40vw, 80vw") {
+  if (MOBILE_MQ.matches) {
+    const mobileCrop = await resolveImage(`${basename}-m`, dir);
+    if (mobileCrop.url) basename = `${basename}-m`;
+  }
   const resolved = await resolveImage(basename, dir);
   if (!resolved.url) {
     img.src = placeholderDataURI(basename);

@@ -346,7 +346,7 @@ html[dir="rtl"] #loader-line { transform-origin: 100% 50%; }
   justify-content: flex-start;
   padding-block-start: calc(var(--nav-h) + env(safe-area-inset-top) + var(--s2));
   padding-block-end: calc(var(--s4) + env(safe-area-inset-bottom));
-  padding-inline: var(--s5);
+  padding-inline: max(var(--s5), env(safe-area-inset-left), env(safe-area-inset-right));
   gap: var(--s3);
 }
 .dish__figure {
@@ -1210,6 +1210,7 @@ html.js-motion .hero__divider { transform: scaleX(0); }
   .dish[data-m-align="center"] .dish__actions,
   .dish[data-m-align="center"] .dish__meta { justify-content: center; }
   .dish[data-m-size="large"] .dish__figure { inline-size: min(80vw, 42dvh); }
+  .dish__order, .chef__order { min-block-size: 52px; }
 }
 @media (max-width: 360px) {
   .dish__figure { inline-size: min(64vw, 32dvh); }

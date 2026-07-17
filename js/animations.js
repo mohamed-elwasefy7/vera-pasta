@@ -14,6 +14,8 @@ const THEME_COLORS = {
 };
 
 let reduced = false;
+/* mobile: shorter travel, same duration — calmer on small screens */
+const DIST = window.matchMedia("(max-width: 1023.98px)").matches ? 0.6 : 1;
 let frontSlot = "a";
 let timelines = new Map();     // section -> gsap timeline
 let ambients = new Map();      // section -> tween[]
@@ -110,14 +112,14 @@ function buildDishTimeline(section) {
     const targets = section.querySelectorAll(sel);
     if (targets.length) tl.fromTo(targets, fromVars, toVars, pos);
   };
-  add(".dish__kicker", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45 }, 0);
+  add(".dish__kicker", { y: 18 * DIST, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45 }, 0);
   add(".dish__name .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.8, ease: "power4.out" }, 0.06);
   add(".dish__floats .float", { scale: 0.6, opacity: 0 },
     { scale: 1, opacity: (i, el) => (el.classList.contains("float--far") ? 0.5 : 0.8), duration: 0.55, stagger: 0.08, ease: "back.out(1.3)" }, 0.15);
-  add(".dish__subtitle", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, 0.16);
-  add(".dish__inspiration", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.22);
-  add(".dish__desc", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.28);
-  add(".dish__ingredients li", { y: 14, opacity: 0 },
+  add(".dish__subtitle", { y: 22 * DIST, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, 0.16);
+  add(".dish__inspiration", { y: 18 * DIST, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.22);
+  add(".dish__desc", { y: 18 * DIST, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.28);
+  add(".dish__ingredients li", { y: 14 * DIST, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: "power3.out" }, 0.32);
   add(".dish__price .reveal__inner", { yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.55 }, 0.4);
   add(".dish__price-rule", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.4, ease: "power2.out" }, 0.5);
@@ -132,7 +134,7 @@ function buildDishTimeline(section) {
 /* generic data-enter choreography for narrative screens
    types: rise | mask | fade | pop | rule | photo */
 const ENTER_RECIPES = {
-  rise: [{ y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }],
+  rise: [{ y: 24 * DIST, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }],
   mask: [{ yPercent: 110, opacity: 1 }, { yPercent: 0, duration: 0.9, ease: "power4.out" }],
   fade: [{ opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }],
   pop: [{ scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.5)" }],
